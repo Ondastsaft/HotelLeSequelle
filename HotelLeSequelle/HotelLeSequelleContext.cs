@@ -33,9 +33,12 @@ namespace HotelLeSequelle
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<>().HasOne
+            modelBuilder.Entity<Bokning>().HasOne(b => b.Rum).WithMany(b => b.Boknings).HasForeignKey(r => r.RumId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Bokning>().HasOne(b => b.Kund).WithMany(b => b.Boknings).HasForeignKey(k => k.KundId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Bokning>().HasOne(b => b.Receptionist).WithMany(r => r.Bokningar).HasForeignKey(r => r.ReceptionistId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Tilläggsbeställning>().HasOne(t => t.Bokning).WithMany(b => b.Tilläggsbeställnings).HasForeignKey(b => b.BokningsId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Tilläggsbeställning>().HasOne(t => t.Personal).WithMany(p => p.Tilläggsbeställningar).HasForeignKey(p => p.PersonalId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Rum>().HasOne(r => r.Våning).WithMany(v => v.Rum).HasForeignKey(v => v.VåningsId).OnDelete(DeleteBehavior.Restrict);
         }
-
-
     }
 }

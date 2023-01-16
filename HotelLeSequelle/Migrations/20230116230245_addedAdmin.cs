@@ -4,7 +4,7 @@
 
 namespace HotelLeSequelle.Migrations
 {
-    public partial class majorchanges2 : Migration
+    public partial class addedAdmin : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

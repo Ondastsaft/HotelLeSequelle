@@ -10,7 +10,7 @@
 
         public Våning()
         {
-            Rum = new List<Rum>();
+            Rum = new HashSet<Rum>();
         }
     }
 }

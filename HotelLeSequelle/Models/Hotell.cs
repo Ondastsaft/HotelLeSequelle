@@ -5,8 +5,7 @@
         public int ID { get; set; }
         public int AntalRum { get; set; }
         public int AntalVåningar { get; set; }
-        public virtual ICollection<Bokning> Bokningar { get; set; }
-        public virtual ICollection<Våning> Våningar { get; set; }
+        public virtual ICollection<Våning> Våning { get; set; }
         public string Namn { get; set; }
         public string Land { get; set; }
         public string GatuAdress { get; set; }
@@ -18,8 +17,7 @@
 
         public Hotell()
         {
-            Bokningar = new HashSet<Bokning>();
-            Våningar = new HashSet<Våning>();
+            Våning = new HashSet<Våning>();
         }
 
 

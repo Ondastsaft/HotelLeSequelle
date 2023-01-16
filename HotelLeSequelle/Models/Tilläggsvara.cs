@@ -5,10 +5,11 @@
         public int Id { get; set; }
         public string Namn { get; set; }
         public int Pris { get; set; }
-        public virtual ICollection<Tilläggsbeställning> Tilläggsbeställningar { get; set; }
+        public int Antal { get; set; }
+        public virtual ICollection<Tilläggsbeställning> Tilläggsbeställning { get; set; }
         public Tilläggsvara()
         {
-            Tilläggsbeställningar = new HashSet<Tilläggsbeställning>();
+            Tilläggsbeställning = new HashSet<Tilläggsbeställning>();
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿namespace HotelLeSequelle.Models
 {
-    public abstract partial class Personal : Person
+    public partial class Personal : Person
     {
         public int Anställningsdatum { get; set; }
         public int Anställningsnummer { get; set; }
         public string? Lösenord { get; set; }
-        public virtual ICollection<Tilläggsbeställning> Tilläggsbestälningar { get; set; }
+        public virtual ICollection<Tilläggsbeställning> Tilläggsbeställningar { get; set; }
         public Personal()
         {
-            Tilläggsbestälningar = new HashSet<Tilläggsbeställning>();
+            Tilläggsbeställningar = new HashSet<Tilläggsbeställning>();
         }
 
 

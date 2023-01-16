@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HotelLeSequelle.Migrations
 {
-    public partial class personalfixed : Migration
+    public partial class Fixesinboknings2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -37,7 +37,7 @@ namespace HotelLeSequelle.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Kortuppgifter = table.Column<int>(type: "int", nullable: false),
+                    Kortuppgifter = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Förnamn = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Efternamn = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nationalitet = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -61,8 +61,8 @@ namespace HotelLeSequelle.Migrations
                     Anställningsdatum = table.Column<int>(type: "int", nullable: false),
                     Anställningsnummer = table.Column<int>(type: "int", nullable: false),
                     Lösenord = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Roll = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TilläggsbeställningsId = table.Column<int>(type: "int", nullable: true),
                     Förnamn = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Efternamn = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nationalitet = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -84,7 +84,8 @@ namespace HotelLeSequelle.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Namn = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Pris = table.Column<int>(type: "int", nullable: false)
+                    Pris = table.Column<int>(type: "int", nullable: false),
+                    Antal = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,18 +118,17 @@ namespace HotelLeSequelle.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RummetsVåningId = table.Column<int>(type: "int", nullable: false),
                     VåningsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rum", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Rum_Våningar_RummetsVåningId",
-                        column: x => x.RummetsVåningId,
+                        name: "FK_Rum_Våningar_VåningsId",
+                        column: x => x.VåningsId,
                         principalTable: "Våningar",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,42 +137,33 @@ namespace HotelLeSequelle.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    HotellId = table.Column<int>(type: "int", nullable: true),
-                    KundId = table.Column<int>(type: "int", nullable: true),
-                    BokatRumId = table.Column<int>(type: "int", nullable: true),
-                    BokandePersonalId = table.Column<int>(type: "int", nullable: true),
+                    KundId = table.Column<int>(type: "int", nullable: false),
+                    RumId = table.Column<int>(type: "int", nullable: false),
+                    ReceptionistId = table.Column<int>(type: "int", nullable: false),
                     IncheckningsDatum = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UtcheckningsDatum = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReceptionistId = table.Column<int>(type: "int", nullable: true)
+                    UtcheckningsDatum = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bokningar", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bokningar_Hotell_HotellId",
-                        column: x => x.HotellId,
-                        principalTable: "Hotell",
-                        principalColumn: "ID");
-                    table.ForeignKey(
                         name: "FK_Bokningar_Kunder_KundId",
                         column: x => x.KundId,
                         principalTable: "Kunder",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Bokningar_Personal_BokandePersonalId",
-                        column: x => x.BokandePersonalId,
-                        principalTable: "Personal",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bokningar_Personal_ReceptionistId",
                         column: x => x.ReceptionistId,
                         principalTable: "Personal",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Bokningar_Rum_BokatRumId",
-                        column: x => x.BokatRumId,
+                        name: "FK_Bokningar_Rum_RumId",
+                        column: x => x.RumId,
                         principalTable: "Rum",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,34 +172,26 @@ namespace HotelLeSequelle.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SäljareId = table.Column<int>(type: "int", nullable: false),
-                    SäljarId = table.Column<int>(type: "int", nullable: false),
-                    BokningId = table.Column<int>(type: "int", nullable: false),
+                    PersonalId = table.Column<int>(type: "int", nullable: false),
                     BokningsId = table.Column<int>(type: "int", nullable: false),
                     OrderTotal = table.Column<int>(type: "int", nullable: false),
-                    ReceptionistId = table.Column<int>(type: "int", nullable: true),
                     ServitörId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tilläggsbeställningar", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tilläggsbeställningar_Bokningar_BokningId",
-                        column: x => x.BokningId,
+                        name: "FK_Tilläggsbeställningar_Bokningar_BokningsId",
+                        column: x => x.BokningsId,
                         principalTable: "Bokningar",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tilläggsbeställningar_Personal_ReceptionistId",
-                        column: x => x.ReceptionistId,
-                        principalTable: "Personal",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tilläggsbeställningar_Personal_SäljareId",
-                        column: x => x.SäljareId,
+                        name: "FK_Tilläggsbeställningar_Personal_PersonalId",
+                        column: x => x.PersonalId,
                         principalTable: "Personal",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tilläggsbeställningar_Personal_ServitörId",
                         column: x => x.ServitörId,
@@ -220,40 +203,25 @@ namespace HotelLeSequelle.Migrations
                 name: "TilläggsbeställningTilläggsvara",
                 columns: table => new
                 {
-                    TilläggsbeställningarId = table.Column<int>(type: "int", nullable: false),
-                    TilläggsvarorId = table.Column<int>(type: "int", nullable: false)
+                    TilläggsbeställningId = table.Column<int>(type: "int", nullable: false),
+                    TilläggsvaraId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TilläggsbeställningTilläggsvara", x => new { x.TilläggsbeställningarId, x.TilläggsvarorId });
+                    table.PrimaryKey("PK_TilläggsbeställningTilläggsvara", x => new { x.TilläggsbeställningId, x.TilläggsvaraId });
                     table.ForeignKey(
-                        name: "FK_TilläggsbeställningTilläggsvara_Tilläggsbeställningar_TilläggsbeställningarId",
-                        column: x => x.TilläggsbeställningarId,
+                        name: "FK_TilläggsbeställningTilläggsvara_Tilläggsbeställningar_TilläggsbeställningId",
+                        column: x => x.TilläggsbeställningId,
                         principalTable: "Tilläggsbeställningar",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TilläggsbeställningTilläggsvara_Tilläggsvaror_TilläggsvarorId",
-                        column: x => x.TilläggsvarorId,
+                        name: "FK_TilläggsbeställningTilläggsvara_Tilläggsvaror_TilläggsvaraId",
+                        column: x => x.TilläggsvaraId,
                         principalTable: "Tilläggsvaror",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bokningar_BokandePersonalId",
-                table: "Bokningar",
-                column: "BokandePersonalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bokningar_BokatRumId",
-                table: "Bokningar",
-                column: "BokatRumId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bokningar_HotellId",
-                table: "Bokningar",
-                column: "HotellId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bokningar_KundId",
@@ -266,24 +234,24 @@ namespace HotelLeSequelle.Migrations
                 column: "ReceptionistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rum_RummetsVåningId",
+                name: "IX_Bokningar_RumId",
+                table: "Bokningar",
+                column: "RumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rum_VåningsId",
                 table: "Rum",
-                column: "RummetsVåningId");
+                column: "VåningsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tilläggsbeställningar_BokningId",
+                name: "IX_Tilläggsbeställningar_BokningsId",
                 table: "Tilläggsbeställningar",
-                column: "BokningId");
+                column: "BokningsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tilläggsbeställningar_ReceptionistId",
+                name: "IX_Tilläggsbeställningar_PersonalId",
                 table: "Tilläggsbeställningar",
-                column: "ReceptionistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tilläggsbeställningar_SäljareId",
-                table: "Tilläggsbeställningar",
-                column: "SäljareId");
+                column: "PersonalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tilläggsbeställningar_ServitörId",
@@ -291,9 +259,9 @@ namespace HotelLeSequelle.Migrations
                 column: "ServitörId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TilläggsbeställningTilläggsvara_TilläggsvarorId",
+                name: "IX_TilläggsbeställningTilläggsvara_TilläggsvaraId",
                 table: "TilläggsbeställningTilläggsvara",
-                column: "TilläggsvarorId");
+                column: "TilläggsvaraId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Våningar_HotellId",
