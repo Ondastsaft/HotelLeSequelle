@@ -4,6 +4,7 @@ using HotelLeSequelle;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelLeSequelle.Migrations
 {
     [DbContext(typeof(HotelLeSequelleContext))]
-    partial class HotelLeSequelleContextModelSnapshot : ModelSnapshot
+    [Migration("20230116203537_personalfixed")]
+    partial class personalfixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,19 +32,19 @@ namespace HotelLeSequelle.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BokandePersonalId")
+                    b.Property<int?>("BokandePersonalId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BokatRumId")
+                    b.Property<int?>("BokatRumId")
                         .HasColumnType("int");
 
-                    b.Property<int>("HotellId")
+                    b.Property<int?>("HotellId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("IncheckningsDatum")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("KundId")
+                    b.Property<int?>("KundId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ReceptionistId")
@@ -141,9 +143,8 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Kortuppgifter")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Kortuppgifter")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nationalitet")
                         .IsRequired()
@@ -215,6 +216,9 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Roll")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Telefonnummer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -264,24 +268,27 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("OrderTotal")
                         .HasColumnType("int");
 
-                    b.Property<int>("PersonalId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ReceptionistId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ServitörId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SäljarId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SäljareId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BokningId");
 
-                    b.HasIndex("PersonalId");
-
                     b.HasIndex("ReceptionistId");
 
                     b.HasIndex("ServitörId");
+
+                    b.HasIndex("SäljareId");
 
                     b.ToTable("Tilläggsbeställningar");
                 });
@@ -354,9 +361,6 @@ namespace HotelLeSequelle.Migrations
                 {
                     b.HasBaseType("HotelLeSequelle.Models.Personal");
 
-                    b.Property<int>("TilläggsbeställningsId")
-                        .HasColumnType("int");
-
                     b.HasDiscriminator().HasValue("Servitör");
                 });
 
@@ -364,27 +368,19 @@ namespace HotelLeSequelle.Migrations
                 {
                     b.HasOne("HotelLeSequelle.Models.Personal", "BokandePersonal")
                         .WithMany()
-                        .HasForeignKey("BokandePersonalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BokandePersonalId");
 
                     b.HasOne("HotelLeSequelle.Models.Rum", "BokatRum")
                         .WithMany("RummetsBokningar")
-                        .HasForeignKey("BokatRumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BokatRumId");
 
                     b.HasOne("HotelLeSequelle.Models.Hotell", "BokningensHotell")
                         .WithMany("Bokningar")
-                        .HasForeignKey("HotellId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HotellId");
 
                     b.HasOne("HotelLeSequelle.Models.Kund", "BokandeKund")
-                        .WithMany("Boknings")
-                        .HasForeignKey("KundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Bokningar")
+                        .HasForeignKey("KundId");
 
                     b.HasOne("HotelLeSequelle.Models.Receptionist", null)
                         .WithMany("Bokningar")
@@ -402,7 +398,7 @@ namespace HotelLeSequelle.Migrations
             modelBuilder.Entity("HotelLeSequelle.Models.Rum", b =>
                 {
                     b.HasOne("HotelLeSequelle.Models.Våning", "RummetsVåning")
-                        .WithMany("Rum")
+                        .WithMany("VåningensRum")
                         .HasForeignKey("RummetsVåningId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -418,23 +414,23 @@ namespace HotelLeSequelle.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HotelLeSequelle.Models.Personal", "Personal")
-                        .WithMany("Tilläggsbestälningar")
-                        .HasForeignKey("PersonalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("HotelLeSequelle.Models.Receptionist", null)
                         .WithMany("Tilläggsbeställningar")
                         .HasForeignKey("ReceptionistId");
 
                     b.HasOne("HotelLeSequelle.Models.Servitör", null)
-                        .WithMany("Tilläggsbeställnings")
+                        .WithMany("MottagnaTilläggsbeställningar")
                         .HasForeignKey("ServitörId");
+
+                    b.HasOne("HotelLeSequelle.Models.Personal", "Säljare")
+                        .WithMany()
+                        .HasForeignKey("SäljareId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Bokning");
 
-                    b.Navigation("Personal");
+                    b.Navigation("Säljare");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Våning", b =>
@@ -477,12 +473,7 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.Kund", b =>
                 {
-                    b.Navigation("Boknings");
-                });
-
-            modelBuilder.Entity("HotelLeSequelle.Models.Personal", b =>
-                {
-                    b.Navigation("Tilläggsbestälningar");
+                    b.Navigation("Bokningar");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Rum", b =>
@@ -492,7 +483,7 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.Våning", b =>
                 {
-                    b.Navigation("Rum");
+                    b.Navigation("VåningensRum");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Receptionist", b =>
@@ -504,7 +495,7 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.Servitör", b =>
                 {
-                    b.Navigation("Tilläggsbeställnings");
+                    b.Navigation("MottagnaTilläggsbeställningar");
                 });
 #pragma warning restore 612, 618
         }

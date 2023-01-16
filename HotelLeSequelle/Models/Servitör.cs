@@ -1,13 +1,17 @@
 ﻿namespace HotelLeSequelle.Models
 {
-    public partial class Servitör : Person
+    public partial class Servitör : Personal
     {
-        public virtual ICollection<Tilläggsbeställning> MottagnaTilläggsbeställningar { get; set; }
 
-        public Servitör(string förnamn, string efternamn, string nationalitet, string gatuadress, string postnummer, string postort, string telefonnummer,
-            string epost) : base(förnamn, efternamn, nationalitet, gatuadress, postnummer, postort, telefonnummer, epost)
+
+        //public Servitör(string förnamn, string efternamn, string nationalitet, string gatuadress, string postnummer, string postort, string telefonnummer,
+        //    string epost, int anställningsdatum, int anställningsnummer, string lösenord, string roll) :
+        //    base(förnamn, efternamn, nationalitet, gatuadress, postnummer, postort, telefonnummer, epost, anställningsdatum, anställningsnummer, lösenord, roll)
+        public virtual ICollection<Tilläggsbeställning> Tilläggsbeställnings { get; set; }
+        public int TilläggsbeställningsId { get; set; }
+        public Servitör()
         {
-            MottagnaTilläggsbeställningar = new HashSet<Tilläggsbeställning>();
+            Tilläggsbeställnings = new HashSet<Tilläggsbeställning>();
         }
 
     }

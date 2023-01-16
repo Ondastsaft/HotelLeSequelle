@@ -2,15 +2,21 @@
 {
     public class Kund : Person
     {
-        public virtual ICollection<Bokning> Bokningar { get; set; }
+        public virtual ICollection<Bokning> Boknings { get; set; }
 
-        public int Kortuppgifter { get; set; }
+        public string Kortuppgifter { get; set; }
 
-        public Kund(string förnamn, string efternamn, string nationalitet, string gatuadress, string postnummer, string postort, string telefonnummer,
-    string epost) : base(förnamn, efternamn, nationalitet, gatuadress, postnummer, postort, telefonnummer, epost)
+        public Kund()
         {
-            Bokningar = new HashSet<Bokning>();
+            Boknings = new List<Bokning>();
         }
+
 
     }
 }
+
+//    public Kund(string förnamn, string efternamn, string nationalitet, string gatuadress, string postnummer, string postort, string telefonnummer,
+//string epost) : base(förnamn, efternamn, nationalitet, gatuadress, postnummer, postort, telefonnummer, epost)
+//    {
+//        Bokningar = new HashSet<Bokning>();
+//    }

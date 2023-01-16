@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HotelLeSequelle.Migrations
 {
-    public partial class ClassesRev1 : Migration
+    public partial class personalfixed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,26 +75,6 @@ namespace HotelLeSequelle.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Personal", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Servitörer",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Förnamn = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Efternamn = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nationalitet = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Gatuadress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Postnummer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Postort = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefonnummer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Epost = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Servitörer", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,9 +210,9 @@ namespace HotelLeSequelle.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tilläggsbeställningar_Servitörer_ServitörId",
+                        name: "FK_Tilläggsbeställningar_Personal_ServitörId",
                         column: x => x.ServitörId,
-                        principalTable: "Servitörer",
+                        principalTable: "Personal",
                         principalColumn: "Id");
                 });
 
@@ -334,9 +314,6 @@ namespace HotelLeSequelle.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bokningar");
-
-            migrationBuilder.DropTable(
-                name: "Servitörer");
 
             migrationBuilder.DropTable(
                 name: "Kunder");

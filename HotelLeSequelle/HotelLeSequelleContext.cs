@@ -31,6 +31,10 @@ namespace HotelLeSequelle
                 optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Hotellet;Trusted_Connection=True; ");
             }
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<>().HasOne
+        }
 
 
     }

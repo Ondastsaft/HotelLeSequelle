@@ -11,17 +11,18 @@
         public string Postort { get; set; }
         public string Telefonnummer { get; set; }
         public string Epost { get; set; }
-        public Person(string förnamn, string efternamn, string nationalitet, string gatuadress, string postnummer, string postort, string telefonnummer, string epost)
-        {
-            Förnamn = förnamn;
-            Efternamn = efternamn;
-            Nationalitet = nationalitet;
-            Gatuadress = gatuadress;
-            Postnummer = postnummer;
-            Postort = postort;
-            Telefonnummer = telefonnummer;
-            Epost = epost;
-        }
 
     }
 }
+
+//public Person(string förnamn, string efternamn, string nationalitet, string gatuadress, string postnummer, string postort, string telefonnummer, string epost)
+//{
+//    Förnamn = förnamn;
+//    Efternamn = efternamn;
+//    Nationalitet = nationalitet;
+//    Gatuadress = gatuadress;
+//    Postnummer = postnummer;
+//    Postort = postort;
+//    Telefonnummer = telefonnummer;
+//    Epost = epost;
+//}
