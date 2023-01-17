@@ -4,6 +4,7 @@ using HotelLeSequelle;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelLeSequelle.Migrations
 {
     [DbContext(typeof(HotelLeSequelleContext))]
-    partial class HotelLeSequelleContextModelSnapshot : ModelSnapshot
+    [Migration("20230117224802_intit")]
+    partial class intit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,7 +142,7 @@ namespace HotelLeSequelle.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Hotels");
+                    b.ToTable("Hotel");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Product", b =>
@@ -271,12 +273,17 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ReservationId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SideOrderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ReservationId");
 
                     b.HasIndex("SideOrderId");
 
@@ -442,11 +449,17 @@ namespace HotelLeSequelle.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HotelLeSequelle.Models.Reservation", "Reservation")
+                        .WithMany()
+                        .HasForeignKey("ReservationId");
+
                     b.HasOne("HotelLeSequelle.Models.SideOrder", "SideOrder")
                         .WithMany("SideOrderProducts")
                         .HasForeignKey("SideOrderId");
 
                     b.Navigation("Product");
+
+                    b.Navigation("Reservation");
 
                     b.Navigation("SideOrder");
                 });

@@ -13,60 +13,54 @@
                 Console.WriteLine($"{i + 1}. {methods[i].Method.Name}");
             }
             Console.WriteLine("0. Exit");
-            int key = UniversalMethods.TryParseReadKey(1, methods.Count());
+            int key = UniversalMethods.TryParseReadKey(1, methods.Count);
             methods[key - 1].Invoke();
         }
         private void AddHotel()
         {
             Hotel tempHotel = new Hotel();
+            tempHotel.Name = "Hotel Le Sequelle";
+            tempHotel.StreetAdress = "Kungsgatan 1";
+            tempHotel.Locality = "Stockholm";
+            tempHotel.Country = "Sweden";
+            tempHotel.PhoneNumber = "08-1234567";
+            tempHotel.ZipCode = "16101";
+            tempHotel.Email = "info@hototellesquelle.com";
+            tempHotel.WebPage = "www.hototellesquelle.com";
             Console.Clear();
-            Console.WriteLine("Name your new Hotel");
-            tempHotel.Name = Console.ReadLine(); Console.Clear();
-            Console.WriteLine("Name the adress of your new Hotel");
-            tempHotel.StreetAdress = Console.ReadLine(); Console.Clear();
-            Console.WriteLine("Enter the phone number of your new hotel");
-            tempHotel.PhoneNumber = Console.ReadLine(); Console.Clear();
-            Console.WriteLine("In which country is the hotel");
-            tempHotel.Country = Console.ReadLine(); Console.Clear();
-            Console.WriteLine("Enter zip code for your new hotel");
-            tempHotel.ZipCode = Console.ReadLine(); Console.Clear();
-            Console.WriteLine("Enter locality for your new hotel");
-            tempHotel.Locality = Console.ReadLine(); Console.Clear();
-            Console.WriteLine("Enter main contact E-mail for your hotel");
-            tempHotel.Email = Console.ReadLine(); Console.Clear();
-            Console.WriteLine("Enter the webpage of your new hotel");
-            tempHotel.WebPage = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("Name your new Hotel");
+            //tempHotel.Name = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("Name the adress of your new Hotel");
+            //tempHotel.StreetAdress = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("Enter the phone number of your new hotel");
+            //tempHotel.PhoneNumber = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("In which country is the hotel resided");
+            //tempHotel.Country = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("Enter zip code for your new hotel");
+            //tempHotel.ZipCode = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("Enter locality for your new hotel");
+            //tempHotel.Locality = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("Enter main contact E-mail for your hotel");
+            //tempHotel.Email = Console.ReadLine(); Console.Clear();
+            //Console.WriteLine("Enter the webpage of your new hotel");
+            //tempHotel.WebPage = Console.ReadLine(); Console.Clear();          
+            tempHotel = AddFloorsAndRooms(tempHotel);
             var Db = new HotelLeSequelleContext();
-            Db.Hotell.Add(tempHotel);
+            Db.Hotels.Add(tempHotel);
             Db.SaveChanges();
-            AddFloorsAndRooms(tempHotel.Name);
         }
-        private void AddFloorsAndRooms(string hotelname)
+        private Hotel AddFloorsAndRooms(Hotel tempHotel)
         {
             Console.WriteLine("How many floors does your hotel have?");
-            int floors = UniversalMethods.TryParseReadKey();
-            UniversalMethods.ClearAboveCursor(2);
-            var db = new HotelLeSequelleContext();
-            var hotel = db.Hotell.Where(h => h.Name == hotelname).SingleOrDefault();
-            for (int i = 0; i < floors; i++)
+            tempHotel.NumberOfFloors = UniversalMethods.TryParseReadLine();
+            UniversalMethods.ClearAboveCursor(1);
+            for (int i = 1; i <= tempHotel.NumberOfFloors; i++)
             {
                 var tempFloor = new Floor();
-                tempFloor.FloorNumber = i + 1;
-                try
-                {
-                    tempFloor.HotelId = hotel.ID;
-                }
-                catch
-                {
-                    Console.WriteLine("Error retrieving hotel from database");
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
-                    break;
-                }
-
-                Console.WriteLine($"How many rooms does floor {i + 1} have?");
+                tempFloor.FloorNumber = i;
+                Console.WriteLine($"How many rooms does floor {i} have?");
                 int rooms = UniversalMethods.TryParseReadLine();
-                for (int j = 0; j < rooms; j++)
+                for (int j = 1; j <= rooms; j++)
                 {
                     var tempRoom = new Room();
                     if (j < 10)
@@ -77,12 +71,20 @@
                     {
                         tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i + 1) + (j + 1)) : ((i + 1) + (j + 1));
                     }
-                    tempRoom.Floor = tempFloor;
                     tempFloor.Rooms.Add(tempRoom);
-                    db.Add(tempFloor);
                 }
-
+                tempHotel.Floors.Add(tempFloor);
             }
+
+            tempHotel.NumberOfFloors = tempHotel.Floors.Count;
+            int roomCount = 0;
+            foreach (var floor in tempHotel.Floors)
+            {
+                roomCount += floor.Rooms.Count;
+            }
+            tempHotel.NumberOfRooms = roomCount;
+            return tempHotel;
+
         }
     }
 }

@@ -8,8 +8,9 @@ namespace HotelLeSequelle
         public static Administrator? LoggedInAdmin { get; set; }
         static void Main(string[] args)
         {
-            LoggedInAdmin = new Administrator();
-            LoggedInAdmin.Menu();
+            //LoggedInAdmin = new Administrator();
+            //LoggedInAdmin.Menu();
+            UniversalMethods.DeleteAllTables();
         }
     }
 }

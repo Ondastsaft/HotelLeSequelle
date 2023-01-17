@@ -1,8 +1,8 @@
-﻿namespace HotelLeSequelle
+﻿using Microsoft.EntityFrameworkCore;
+namespace HotelLeSequelle
 {
     internal class UniversalMethods
     {
-
         public static int TryParseReadKey(int spanLow, int spanHigh)
         {
             int key = 0;
@@ -79,7 +79,6 @@
             Console.WriteLine();
             Console.WriteLine();
         }
-
         public static void IncorrectEntryMessage()
         {
             Console.WriteLine("Incorrect entry!");
@@ -87,10 +86,37 @@
             Thread.Sleep(1500);
 
         }
-        //truncate all tables in database
+        public static void TruncateAllTables()
+        {
+            using (var context = new HotelLeSequelleContext())
+            {
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Reservation]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Customer]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Receptionist]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Waiter]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Room]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[SideOrder]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Floor]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Product]");
+                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[SideOrderProduct]");
+            }
+        }
+        public static void DeleteAllTables()
+        {
+            using (var context = new HotelLeSequelleContext())
+            {
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[SideOrders]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Reservations]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[SideOrderProduct]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Products]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Customers]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Staff]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Rooms]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Floors]");
+                context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Hotels]");
 
 
-
+            }
+        }
     }
-
 }

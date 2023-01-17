@@ -14,15 +14,16 @@ namespace HotelLeSequelle
         {
         }
 
-        public virtual DbSet<Reservation> Bokningar { get; set; }
-        public virtual DbSet<Hotel> Hotell { get; set; }
-        public virtual DbSet<Customer> Kunder { get; set; }
-        public virtual DbSet<Receptionist> Receptionister { get; set; }
-        public virtual DbSet<Waiter> Servitörer { get; set; }
-        public virtual DbSet<Room> Rum { get; set; }
-        public virtual DbSet<SideOrder> Tilläggsbeställningar { get; set; }
-        public virtual DbSet<SideOrderProduct> Tilläggsvaror { get; set; }
-        public virtual DbSet<Floor> Våningar { get; set; }
+        public virtual DbSet<Reservation> Reservations { get; set; }
+        public virtual DbSet<Hotel> Hotels { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Receptionist> Receptionists { get; set; }
+        public virtual DbSet<Waiter> Waiters { get; set; }
+        public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<SideOrder> SideOrders { get; set; }
+        //public virtual DbSet<SideOrderProduct> SideOrderProducts { get; set; }
+        public virtual DbSet<Floor> Floors { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
