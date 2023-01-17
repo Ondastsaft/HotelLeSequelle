@@ -1,6 +1,6 @@
 ﻿namespace HotelLeSequelle.Models
 {
-    public partial class Customer : Person
+    public partial class Kund
     {
     }
 }
