@@ -1,13 +1,13 @@
 ﻿namespace HotelLeSequelle.Models
 {
-    public partial class Kund : Person
+    public partial class Customer : Person
     {
-        public virtual ICollection<Bokning> Boknings { get; set; }
-        public string Kortuppgifter { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; set; }
+        public string CardDetails { get; set; }
 
-        public Kund()
+        public Customer()
         {
-            Boknings = new List<Bokning>();
+            Reservations = new List<Reservation>();
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿namespace HotelLeSequelle.Models
 {
-    public partial class Receptionist : Personal
+    public partial class Receptionist : Staff
     {
-        public ICollection<Bokning> Bokningar { get; set; }
-        public ICollection<Tilläggsbeställning> Tilläggsbeställningar { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<SideOrder> SideOrders { get; set; }
 
         public Receptionist()
         {
-            Bokningar = new HashSet<Bokning>();
-            Tilläggsbeställningar = new HashSet<Tilläggsbeställning>();
+            Reservations = new HashSet<Reservation>();
+            SideOrders = new HashSet<SideOrder>();
         }
     }
 }

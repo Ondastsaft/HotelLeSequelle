@@ -3,14 +3,14 @@
     public abstract partial class Person
     {
         public int Id { get; set; }
-        public string Förnamn { get; set; }
-        public string Efternamn { get; set; }
-        public string Nationalitet { get; set; }
-        public string Gatuadress { get; set; }
-        public string Postnummer { get; set; }
-        public string Postort { get; set; }
-        public string Telefonnummer { get; set; }
-        public string Epost { get; set; }
+        public string SirName { get; set; }
+        public string LastName { get; set; }
+        public string Nationality { get; set; }
+        public string StreetAdress { get; set; }
+        public string ZipCode { get; set; }
+        public string Locality { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
 
     }
 }

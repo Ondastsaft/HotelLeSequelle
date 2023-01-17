@@ -1,23 +1,23 @@
 ﻿namespace HotelLeSequelle.Models
 {
-    public class Hotell
+    public class Hotel
     {
         public int ID { get; set; }
-        public int AntalRum { get; set; }
-        public int AntalVåningar { get; set; }
-        public virtual ICollection<Våning> Våning { get; set; }
-        public string Namn { get; set; }
-        public string Land { get; set; }
-        public string GatuAdress { get; set; }
-        public string Postnummer { get; set; }
-        public string PostOrt { get; set; }
-        public string Telefonnummer { get; set; }
-        public string Epost { get; set; }
-        public string Hemsida { get; set; }
+        public int NumberOfRooms { get; set; }
+        public int NumberOfFloors { get; set; }
+        public virtual ICollection<Floor> Floors { get; set; }
+        public string Name { get; set; }
+        public string Country { get; set; }
+        public string StreetAdress { get; set; }
+        public string ZipCode { get; set; }
+        public string Locality { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string WebPage { get; set; }
 
-        public Hotell()
+        public Hotel()
         {
-            Våning = new HashSet<Våning>();
+            Floors = new HashSet<Floor>();
         }
 
 

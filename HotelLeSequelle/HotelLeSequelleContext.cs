@@ -14,15 +14,15 @@ namespace HotelLeSequelle
         {
         }
 
-        public virtual DbSet<Bokning> Bokningar { get; set; }
-        public virtual DbSet<Hotell> Hotell { get; set; }
-        public virtual DbSet<Kund> Kunder { get; set; }
+        public virtual DbSet<Reservation> Bokningar { get; set; }
+        public virtual DbSet<Hotel> Hotell { get; set; }
+        public virtual DbSet<Customer> Kunder { get; set; }
         public virtual DbSet<Receptionist> Receptionister { get; set; }
-        public virtual DbSet<Servitör> Servitörer { get; set; }
-        public virtual DbSet<Rum> Rum { get; set; }
-        public virtual DbSet<Tilläggsbeställning> Tilläggsbeställningar { get; set; }
-        public virtual DbSet<Tilläggsvara> Tilläggsvaror { get; set; }
-        public virtual DbSet<Våning> Våningar { get; set; }
+        public virtual DbSet<Waiter> Servitörer { get; set; }
+        public virtual DbSet<Room> Rum { get; set; }
+        public virtual DbSet<SideOrder> Tilläggsbeställningar { get; set; }
+        public virtual DbSet<SideOrderProduct> Tilläggsvaror { get; set; }
+        public virtual DbSet<Floor> Våningar { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,12 +33,12 @@ namespace HotelLeSequelle
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Bokning>().HasOne(b => b.Rum).WithMany(b => b.Boknings).HasForeignKey(r => r.RumId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Bokning>().HasOne(b => b.Kund).WithMany(b => b.Boknings).HasForeignKey(k => k.KundId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Bokning>().HasOne(b => b.Receptionist).WithMany(r => r.Bokningar).HasForeignKey(r => r.ReceptionistId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Tilläggsbeställning>().HasOne(t => t.Bokning).WithMany(b => b.Tilläggsbeställnings).HasForeignKey(b => b.BokningsId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Tilläggsbeställning>().HasOne(t => t.Personal).WithMany(p => p.Tilläggsbeställningar).HasForeignKey(p => p.PersonalId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Rum>().HasOne(r => r.Våning).WithMany(v => v.Rum).HasForeignKey(v => v.VåningsId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Reservation>().HasOne(b => b.Room).WithMany(b => b.Reservations).HasForeignKey(r => r.RoomID).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Reservation>().HasOne(b => b.Customer).WithMany(b => b.Reservations).HasForeignKey(k => k.CustomerId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Reservation>().HasOne(b => b.Receptionist).WithMany(r => r.Reservations).HasForeignKey(r => r.ReceptionistId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<SideOrder>().HasOne(t => t.Reservation).WithMany(b => b.SideOrders).HasForeignKey(b => b.ReservationId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<SideOrder>().HasOne(t => t.Staff).WithMany(p => p.SideOrders).HasForeignKey(p => p.StaffId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Room>().HasOne(r => r.Floor).WithMany(v => v.Rooms).HasForeignKey(v => v.FloorId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
