@@ -8,9 +8,7 @@ namespace HotelLeSequelle
         public HotelLeSequelleContext()
         {
         }
-
-        public HotelLeSequelleContext(DbContextOptions<HotelLeSequelleContext> options)
-            : base(options)
+        public HotelLeSequelleContext(DbContextOptions<HotelLeSequelleContext> options) : base(options)
         {
         }
         public virtual DbSet<Administrator> Administrators { get; set; }
@@ -24,7 +22,6 @@ namespace HotelLeSequelle
         //public virtual DbSet<SideOrderProduct> SideOrderProducts { get; set; }
         public virtual DbSet<Floor> Floors { get; set; }
         public virtual DbSet<Product> Products { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

@@ -4,7 +4,7 @@
     {
         public virtual void Menu()
         {
-            Console.Clear();
         }
+
     }
 }

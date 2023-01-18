@@ -13,6 +13,5 @@
             SideOrders = new HashSet<SideOrder>();
             Reservations = new HashSet<Reservation>();
         }
-
     }
 }

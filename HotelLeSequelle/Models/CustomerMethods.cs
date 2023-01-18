@@ -7,7 +7,6 @@
             Console.Clear();
             Console.WriteLine("I am a customer");
             Console.ReadLine();
-
         }
     }
 }

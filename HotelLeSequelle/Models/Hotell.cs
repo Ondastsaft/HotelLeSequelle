@@ -14,15 +14,9 @@
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string WebPage { get; set; }
-
         public Hotel()
         {
             Floors = new HashSet<Floor>();
         }
-
-
-
-
-
     }
 }

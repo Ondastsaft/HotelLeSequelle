@@ -2,7 +2,6 @@
 {
     public partial class Administrator
     {
-        //Lägga till våningar och rum Vid Skapande av Hotellet
         public void Menu()
         {
             List<Action> methods = new List<Action>() { AddHotel };

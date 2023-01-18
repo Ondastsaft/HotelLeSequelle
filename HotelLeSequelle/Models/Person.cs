@@ -17,14 +17,4 @@
     }
 }
 
-//public Person(string förnamn, string efternamn, string nationalitet, string gatuadress, string postnummer, string postort, string telefonnummer, string epost)
-//{
-//    Förnamn = förnamn;
-//    Efternamn = efternamn;
-//    Nationalitet = nationalitet;
-//    Gatuadress = gatuadress;
-//    Postnummer = postnummer;
-//    Postort = postort;
-//    Telefonnummer = telefonnummer;
-//    Epost = epost;
-//}
+

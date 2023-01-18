@@ -326,7 +326,6 @@ namespace HotelLeSequelle
             db.Customers.Add(customer);
             db.SaveChanges();
         }
-
         public static void Menu()
         {
             Console.Clear();
