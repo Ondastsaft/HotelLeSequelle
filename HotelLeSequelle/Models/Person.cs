@@ -3,6 +3,8 @@
     public abstract partial class Person
     {
         public int Id { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
         public string SirName { get; set; }
         public string LastName { get; set; }
         public string Nationality { get; set; }

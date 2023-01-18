@@ -4,7 +4,6 @@
     {
         public DateTime DateOfEmployment { get; set; }
         public int EmployeeNumber { get; set; }
-        public string PassWord { get; set; }
         public virtual ICollection<SideOrder> SideOrders { get; set; }
         public Staff()
         {

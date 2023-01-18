@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HotelLeSequelle.Models;
+using Microsoft.EntityFrameworkCore;
 namespace HotelLeSequelle
 {
     internal class UniversalMethods
@@ -118,5 +119,60 @@ namespace HotelLeSequelle
 
             }
         }
+        public static void AddTestPersons()
+        {
+            var customer = new Customer()
+            {
+                SirName = "John",
+                LastName = "Doe",
+                StreetAdress = "123 Main St",
+                Locality = "New York",
+                ZipCode = "12345",
+                PhoneNumber = "123-456-7890",
+                UserName = "JohnDoe",
+                Password = "1234",
+                Email = "",
+                CardDetails = "5521 4532 5678 2341, 421, 05/24 John Doe",
+                Nationality = "USA"
+            };
+            var waiter = new Waiter()
+            {
+                UserName = "Waiter",
+                Password = "Waiter1",
+                SirName = "Mike",
+                LastName = "Tyson",
+                StreetAdress = "Home",
+                EmployeeNumber = 1,
+                Locality = "Sweden",
+                Email = "a@a.com",
+                PhoneNumber = "123-456-7890",
+                ZipCode = "12345",
+                DateOfEmployment = new DateTime(2019, 1, 1),
+                Nationality = "USA"
+            };
+            var receptionist = new Receptionist()
+            {
+                UserName = "Receptionist",
+                Password = "Receptionist1",
+                SirName = "Eric",
+                LastName = "Magnusson",
+                StreetAdress = "Home",
+                EmployeeNumber = 2,
+                Locality = "Sweden",
+                Email = "",
+                PhoneNumber = "123-456-7890",
+                ZipCode = "12345",
+                DateOfEmployment = new DateTime(2019, 1, 1),
+                Nationality = "USA"
+            };
+            using (var db = new HotelLeSequelleContext())
+            {
+                db.Customers.Add(customer);
+                db.Waiters.Add(waiter);
+                db.Receptionists.Add(receptionist);
+                db.SaveChanges();
+            }
+        }
+
     }
 }

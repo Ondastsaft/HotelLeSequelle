@@ -2,6 +2,7 @@
 
 namespace HotelLeSequelle
 {
+    //Ändra format på datetime (MM/DD/YYYY)
     public class Program
     {
         public static Person? LoggedInUser { get; set; }
@@ -10,7 +11,9 @@ namespace HotelLeSequelle
         {
             //LoggedInAdmin = new Administrator();
             //LoggedInAdmin.Menu();
-            UniversalMethods.DeleteAllTables();
+            //UniversalMethods.DeleteAllTables();
+            //UniversalMethods.AddTestPersons();
+
         }
     }
 }
