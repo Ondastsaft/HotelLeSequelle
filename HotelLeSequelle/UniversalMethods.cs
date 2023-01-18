@@ -2,8 +2,25 @@
 using Microsoft.EntityFrameworkCore;
 namespace HotelLeSequelle
 {
-    internal class UniversalMethods
+    public static class UniversalMethods
     {
+        static List<Action> DevMenu = new List<Action>()
+                {
+                    TruncateAllTables,
+                    DeleteAllTables,
+                    PopulateDatabase,
+                    LogInTestUser
+                };
+        static List<Action> BaseMenu = new List<Action>()
+        {
+            LogInCustomer,
+            LogInStaff,
+            LogInAdmin,
+            RegisterNewCustomer,
+            SearchAvailableRooms,
+            RunDev
+        };
+        //Helpers
         public static int TryParseReadKey(int spanLow, int spanHigh)
         {
             int key = 0;
@@ -71,6 +88,59 @@ namespace HotelLeSequelle
             }
             return entry;
         }
+        public static void TryParseDateTime()
+        {
+            DateTime userEntry;
+            bool success = false;
+            while (!success)
+            {
+                success = DateTime.TryParse(Console.ReadLine(), out userEntry);
+
+                if (!success)
+                {
+                    IncorrectEntryMessage();
+                    ClearAboveCursor(2);
+                }
+            }
+        }
+        public static void TryParseDateTime(DateTime spanLow, DateTime spanHigh)
+        {
+            DateTime userEntry;
+            bool success = false;
+            while (!success)
+            {
+                success = DateTime.TryParse(Console.ReadLine(), out userEntry);
+
+                if (userEntry < spanLow || userEntry > spanHigh)
+                {
+                    success = false;
+                }
+                if (!success)
+                {
+                    IncorrectEntryMessage();
+                    ClearAboveCursor(1);
+                }
+            }
+        }
+        public static void TryParseDateTime(List<DateTime> unavailableDates)
+        {
+            DateTime userEntry;
+            bool success = false;
+            while (!success)
+            {
+                success = DateTime.TryParse(Console.ReadLine(), out userEntry);
+                if (unavailableDates.Contains(userEntry))
+                {
+                    success = false;
+                    Console.WriteLine("That date has already booked!");
+                }
+                if (!success)
+                {
+                    IncorrectEntryMessage();
+                    ClearAboveCursor(1);
+                }
+            }
+        }
         public static void ClearAboveCursor(int linesToClear)
         {
             int cursorLeft;
@@ -85,8 +155,11 @@ namespace HotelLeSequelle
             Console.WriteLine("Incorrect entry!");
             Console.WriteLine("Please try again");
             Thread.Sleep(1500);
+            ClearAboveCursor(2);
 
         }
+
+        //Dev
         public static void TruncateAllTables()
         {
             using (var context = new HotelLeSequelleContext())
@@ -117,6 +190,45 @@ namespace HotelLeSequelle
                 context.Database.ExecuteSqlRaw("DELETE FROM [dbo].[Hotels]");
 
 
+            }
+        }
+        public static void PopulateDatabase()
+        {
+            AddTestHotel();
+            AddTestProducts();
+            AddTestPersons();
+        }
+        public static void AddReservation()
+        {
+            var reservation = new Reservation();
+            Console.WriteLine("Please enter the room number you want to reserve");
+            //int roomNumber = TryParseReadLine();
+            int roomNumber = 0201;
+            using (var db = new HotelLeSequelleContext())
+            {
+                var room = db.Rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
+                if (room != null)
+                {
+                    reservation.Room = room;
+                }
+                else
+                {
+                    Console.WriteLine("Room not found");
+                    Thread.Sleep(1500);
+                    return;
+                }
+            }
+            //Console.WriteLine("Please enter the date you want to check in");
+            //reservation.CheckInDate = DateTime.Parse(Console.ReadLine());
+            //Console.WriteLine("Please enter the date you want to check out");
+            //reservation.CheckOutDate = DateTime.Parse(Console.ReadLine());
+            reservation.CheckInDate = DateTime.Parse("2023-02-01");
+            reservation.CheckOutDate = DateTime.Parse("2023-02-02");
+            reservation.Customer = (Customer)Program.LoggedInUser;
+            using (var db = new HotelLeSequelleContext())
+            {
+                db.Reservations.Add(reservation);
+                db.SaveChanges();
             }
         }
         public static void AddTestPersons()
@@ -213,6 +325,93 @@ namespace HotelLeSequelle
                 db.SaveChanges();
             }
         }
+        public static void AddTestHotel()
+        {
+            Hotel tempHotel = new Hotel();
+            tempHotel.Name = "Hotel Le Sequelle";
+            tempHotel.StreetAdress = "Kungsgatan 1";
+            tempHotel.Locality = "Stockholm";
+            tempHotel.Country = "Sweden";
+            tempHotel.PhoneNumber = "08-1234567";
+            tempHotel.ZipCode = "16101";
+            tempHotel.Email = "info@hotellesequelle.com";
+            tempHotel.WebPage = "www.hotellesequelle.com";
+            Console.Clear();
+            tempHotel = AddTestFloorsAndRooms(tempHotel);
+            var Db = new HotelLeSequelleContext();
+            Db.Hotels.Add(tempHotel);
+            Db.SaveChanges();
+        }
+        public static Hotel AddTestFloorsAndRooms(Hotel tempHotel)
+        {
+            Console.WriteLine("How many floors does your hotel have?");
+            tempHotel.NumberOfFloors = UniversalMethods.TryParseReadLine();
+            UniversalMethods.ClearAboveCursor(1);
+            for (int i = 1; i <= tempHotel.NumberOfFloors; i++)
+            {
+                var tempFloor = new Floor();
+                tempFloor.FloorNumber = i;
+                Console.WriteLine($"How many rooms does floor {i} have?");
+                int rooms = UniversalMethods.TryParseReadLine();
+                for (int j = 1; j <= rooms; j++)
+                {
+                    var tempRoom = new Room();
+                    if (j < 10)
+                    {
+                        tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i) + "0" + (j + 1)) : int.Parse((i) + "0" + (j + 1));
+                    }
+                    else
+                    {
+                        tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i) + (j + 1)) : ((i) + (j + 1));
+                    }
+                    tempFloor.Rooms.Add(tempRoom);
+                }
+                tempHotel.Floors.Add(tempFloor);
+            }
+
+            tempHotel.NumberOfFloors = tempHotel.Floors.Count;
+            int roomCount = 0;
+            foreach (var floor in tempHotel.Floors)
+            {
+                roomCount += floor.Rooms.Count;
+            }
+            tempHotel.NumberOfRooms = roomCount;
+            return tempHotel;
+
+        }
+        public static void LogInTestUser()
+        {
+            var db = new HotelLeSequelleContext();
+            if (db.Customers.Count() > 0)
+            {
+                Program.LoggedInUser = db.Customers.FirstOrDefault();
+            }
+            else if (db.Waiters.Count() > 0)
+            {
+                Program.LoggedInUser = db.Waiters.FirstOrDefault();
+            }
+            else if (db.Receptionists.Count() > 0)
+            {
+                Program.LoggedInUser = db.Receptionists.FirstOrDefault();
+            }
+            else
+            {
+                Console.WriteLine("No users in database");
+            }
+        }
+
+        // Base
+        public static int PrintMenu(List<Action> menuList, string menuName)
+        {
+            Console.WriteLine("Choose an option:");
+            for (int i = 1; i < menuList.Count; i++)
+            {
+                Console.WriteLine($"{i}. {menuList[i].Method.Name}");
+            }
+            Console.WriteLine("0. Exit");
+            int choice = TryParseReadKey(1, menuList.Count);
+            return choice;
+        }
         public static void LogInCustomer()
         {
             Console.WriteLine("Please enter your username");
@@ -286,6 +485,10 @@ namespace HotelLeSequelle
                 }
             }
         }
+        public static void RunDev()
+        {
+            PrintMenu(DevMenu, "Developer Menu");
+        }
         public static void SearchAvailableRooms()
         {
             Console.WriteLine("Please enter the date you want to check in");
@@ -325,42 +528,6 @@ namespace HotelLeSequelle
             var db = new HotelLeSequelleContext();
             db.Customers.Add(customer);
             db.SaveChanges();
-        }
-        public static void Menu()
-        {
-            Console.Clear();
-            List<Action> menuList = new List<Action>() { SearchAvailableRooms, RegisterNewCustomer, LogInCustomer };
-            Console.WriteLine("Welcome to Hotel Le Sequelle");
-            Console.WriteLine("Please select an option");
-            foreach (var item in menuList)
-            {
-                Console.WriteLine($"[{menuList.IndexOf(item) + 1}] {item.Method.Name}");
-            }
-            int choice = TryParseReadKey(1, 3);
-            switch (choice)
-            {
-                case 1:
-                    SearchAvailableRooms();
-                    break;
-                case 2:
-                    RegisterNewCustomer();
-                    break;
-                case 3:
-                    LogInCustomer();
-                    Program.LoggedInUser.Menu();
-                    break;
-                case 9:
-                    LogInAdmin();
-                    Program.LoggedInAdmin.Menu();
-                    break;
-                case 0:
-                    LogInStaff();
-                    Program.LoggedInUser.Menu();
-                    break;
-                default:
-                    break;
-
-            }
         }
     }
 }

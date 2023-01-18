@@ -2,6 +2,7 @@
 {
     public partial class Administrator
     {
+        public List<Action> MenuList = new List<Action>();
         public void Menu()
         {
             List<Action> methods = new List<Action>() { AddHotel };
@@ -64,11 +65,11 @@
                     var tempRoom = new Room();
                     if (j < 10)
                     {
-                        tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i + 1) + "0" + (j + 1)) : int.Parse((i + 1) + "0" + (j + 1));
+                        tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i) + "0" + (j + 1)) : int.Parse((i) + "0" + (j + 1));
                     }
                     else
                     {
-                        tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i + 1) + (j + 1)) : ((i + 1) + (j + 1));
+                        tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i) + (j + 1)) : ((i) + (j + 1));
                     }
                     tempFloor.Rooms.Add(tempRoom);
                 }
