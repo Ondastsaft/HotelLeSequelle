@@ -13,7 +13,7 @@ namespace HotelLeSequelle
             : base(options)
         {
         }
-
+        public virtual DbSet<Administrator> Administrators { get; set; }
         public virtual DbSet<Reservation> Reservations { get; set; }
         public virtual DbSet<Hotel> Hotels { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }

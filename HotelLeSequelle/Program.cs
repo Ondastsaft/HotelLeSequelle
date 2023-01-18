@@ -12,7 +12,7 @@ namespace HotelLeSequelle
             //LoggedInAdmin = new Administrator();
             //LoggedInAdmin.Menu();
             //UniversalMethods.DeleteAllTables();
-            //UniversalMethods.AddTestPersons();
+            UniversalMethods.AddTestPersons();
 
         }
     }

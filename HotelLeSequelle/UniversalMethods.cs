@@ -173,6 +173,196 @@ namespace HotelLeSequelle
                 db.SaveChanges();
             }
         }
+        public static void AddTestProducts()
+        {
+            var product1 = new Product()
+            {
+                Name = "Burger",
+                Price = 100,
+                Stock = 10,
+            };
+            var product2 = new Product()
+            {
+                Name = "Fries",
+                Price = 50,
+                Stock = 10,
+            };
+            var product3 = new Product()
+            {
+                Name = "Coke",
+                Price = 25,
+                Stock = 10,
+            };
+            var product4 = new Product()
+            {
+                Name = "2 bed room",
+                Price = 200,
+            };
+            var product5 = new Product()
+            {
+                Name = "Single bed room",
+                Price = 150,
+            };
+            using (var db = new HotelLeSequelleContext())
+            {
+                db.Products.Add(product1);
+                db.Products.Add(product2);
+                db.Products.Add(product3);
+                db.Products.Add(product4);
+                db.Products.Add(product5);
+                db.SaveChanges();
+            }
+        }
+        public static void LogInCustomer()
+        {
+            Console.WriteLine("Please enter your username");
+            string userName = Console.ReadLine();
+            Console.WriteLine("Please enter your password");
+            string password = Console.ReadLine();
+            using (var db = new HotelLeSequelleContext())
+            {
+                try
+                {
+                    var customer = db.Customers.FirstOrDefault(c => c.UserName == userName && c.Password == password);
+                    if (customer != null)
+                    {
+                        Program.LoggedInUser = customer;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Incorrect username or password");
+                    Thread.Sleep(1500);
+                    return;
+                }
 
+            }
+        }
+        public static void LogInStaff()
+        {
+            Console.WriteLine("Please enter your username");
+            string userName = Console.ReadLine();
+            Console.WriteLine("Please enter your password");
+            string password = Console.ReadLine();
+            using (var db = new HotelLeSequelleContext())
+            {
+                try
+                {
+                    var staff = db.Receptionists.FirstOrDefault(s => s.UserName == userName && s.Password == password);
+                    if (staff != null)
+                    {
+                        Program.LoggedInUser = staff;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Incorrect username or password");
+                    Thread.Sleep(1500);
+                    return;
+                }
+            }
+        }
+        public static void LogInAdmin()
+        {
+            Console.WriteLine("Please enter your username");
+            string userName = Console.ReadLine();
+            Console.WriteLine("Please enter your password");
+            string password = Console.ReadLine();
+            using (var db = new HotelLeSequelleContext())
+            {
+                try
+                {
+                    var admin = db.Administrators.FirstOrDefault(a => a.Name == userName && a.Password == password);
+                    if (admin != null)
+                    {
+                        Program.LoggedInAdmin = admin;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Incorrect username or password");
+                    Thread.Sleep(1500);
+                    return;
+                }
+            }
+        }
+        public static void SearchAvailableRooms()
+        {
+            Console.WriteLine("Please enter the date you want to check in");
+            DateTime checkInDate = DateTime.Parse(Console.ReadLine());
+            Console.WriteLine("Please enter the date you want to check out");
+            DateTime checkOutDate = DateTime.Parse(Console.ReadLine());
+            using (var db = new HotelLeSequelleContext())
+            {
+                var availableRooms = db.Rooms.Where(r => r.Reservations.All(res => res.CheckInDate > checkOutDate || res.CheckOutDate < checkInDate)).ToList();
+                foreach (var room in availableRooms)
+                {
+                    Console.WriteLine(room.RoomNumber);
+                }
+            }
+        }
+        public static void RegisterNewCustomer()
+        {
+            var customer = new Customer();
+            Console.WriteLine("Please enter your first name");
+            customer.SirName = Console.ReadLine();
+            Console.WriteLine("Please enter your last name");
+            customer.LastName = Console.ReadLine();
+            Console.WriteLine("Please enter your street adress");
+            customer.StreetAdress = Console.ReadLine();
+            Console.WriteLine("Please enter your zip code");
+            customer.ZipCode = Console.ReadLine();
+            Console.WriteLine("Please enter your locality");
+            customer.Locality = Console.ReadLine();
+            Console.WriteLine("Please enter your phone number");
+            customer.PhoneNumber = Console.ReadLine();
+            Console.WriteLine("Please enter your email adress");
+            customer.Email = Console.ReadLine();
+            Console.WriteLine("Please enter your username");
+            customer.UserName = Console.ReadLine();
+            Console.WriteLine("Please enter your password");
+            customer.Password = Console.ReadLine();
+            var db = new HotelLeSequelleContext();
+            db.Customers.Add(customer);
+            db.SaveChanges();
+        }
+
+        public static void Menu()
+        {
+            Console.Clear();
+            List<Action> menuList = new List<Action>() { SearchAvailableRooms, RegisterNewCustomer, LogInCustomer };
+            Console.WriteLine("Welcome to Hotel Le Sequelle");
+            Console.WriteLine("Please select an option");
+            foreach (var item in menuList)
+            {
+                Console.WriteLine($"[{menuList.IndexOf(item) + 1}] {item.Method.Name}");
+            }
+            int choice = TryParseReadKey(1, 3);
+            switch (choice)
+            {
+                case 1:
+                    SearchAvailableRooms();
+                    break;
+                case 2:
+                    RegisterNewCustomer();
+                    break;
+                case 3:
+                    LogInCustomer();
+                    Program.LoggedInUser.Menu();
+                    break;
+                case 9:
+                    LogInAdmin();
+                    Program.LoggedInAdmin.Menu();
+                    break;
+                case 0:
+                    LogInStaff();
+                    Program.LoggedInUser.Menu();
+                    break;
+                default:
+                    break;
+
+            }
+        }
     }
 }
+

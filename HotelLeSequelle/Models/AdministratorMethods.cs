@@ -25,8 +25,8 @@
             tempHotel.Country = "Sweden";
             tempHotel.PhoneNumber = "08-1234567";
             tempHotel.ZipCode = "16101";
-            tempHotel.Email = "info@hototellesquelle.com";
-            tempHotel.WebPage = "www.hototellesquelle.com";
+            tempHotel.Email = "info@hotellesequelle.com";
+            tempHotel.WebPage = "www.hotellesequelle.com";
             Console.Clear();
             //Console.WriteLine("Name your new Hotel");
             //tempHotel.Name = Console.ReadLine(); Console.Clear();
