@@ -8,6 +8,7 @@
         {
             Reservations = new HashSet<Reservation>();
             SideOrders = new HashSet<SideOrder>();
+
         }
     }
 }

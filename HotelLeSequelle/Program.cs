@@ -8,7 +8,7 @@ namespace HotelLeSequelle
         public static Administrator? LoggedInAdmin { get; set; }
         static void Main(string[] args)
         {
-
+            UniversalMethods.Run();
         }
     }
 }

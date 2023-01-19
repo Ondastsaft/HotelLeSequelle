@@ -8,6 +8,7 @@
         public Staff()
         {
             SideOrders = new HashSet<SideOrder>();
+
         }
     }
 }

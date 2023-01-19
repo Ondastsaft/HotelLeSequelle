@@ -13,6 +13,11 @@ namespace HotelLeSequelle
                     LogInTestReceptionist,
                     LogInTestWaiter,
                     LogInTestAdmin,
+                    AddTestPersons,
+                    AddTestProducts,
+                    AddReservation,
+
+
 
                 };
         public static List<Action> BaseMenu = new List<Action>()
@@ -32,7 +37,7 @@ namespace HotelLeSequelle
             bool success = false;
             while (!success)
             {
-                Console.WriteLine($"Enter Choice between {spanLow} and {spanHigh}");
+                Console.WriteLine($"Enter choise between {spanLow} and {spanHigh}");
                 success = int.TryParse(Console.ReadKey().KeyChar.ToString(), out key);
                 if (key < spanLow || key < spanHigh)
                 {
@@ -99,7 +104,7 @@ namespace HotelLeSequelle
             bool success = false;
             while (!success)
             {
-                Console.WriteLine($"Enter Choice between {spanLow} and {spanHigh}");
+                Console.WriteLine($"Enter choise between {spanLow} and {spanHigh}");
                 success = int.TryParse(Console.ReadLine(), out key);
                 if (key < spanLow && key < spanHigh)
                 {
@@ -120,9 +125,9 @@ namespace HotelLeSequelle
             }
             return key;
         }
-        public static void TryParseDateTime()
+        public static DateTime TryParseDateTime()
         {
-            DateTime userEntry;
+            DateTime userEntry = DateTime.Now;
             bool success = false;
             while (!success)
             {
@@ -133,7 +138,9 @@ namespace HotelLeSequelle
                     IncorrectEntryMessage();
                     ClearAboveCursor(2);
                 }
+
             }
+            return userEntry;
         }
         public static void TryParseDateTime(DateTime spanLow, DateTime spanHigh)
         {
@@ -194,13 +201,13 @@ namespace HotelLeSequelle
         {
             foreach (var centeredString in stringsToPrint)
             {
-                Console.SetCursorPosition(Console.BufferWidth / 2, Console.BufferHeight / 2);
+                Console.SetCursorPosition(40, 3);
                 Console.WriteLine(centeredString);
             }
         }
         public static void PrintInMiddle(string stringToPrint)
         {
-            Console.SetCursorPosition(Console.BufferWidth / 2, Console.BufferHeight / 2);
+            Console.SetCursorPosition(40, 3);
             Console.WriteLine(stringToPrint);
         }
 
@@ -248,7 +255,7 @@ namespace HotelLeSequelle
             var reservation = new Reservation();
             Console.WriteLine("Please enter the room number you want to reserve");
             //int roomNumber = TryParseReadLine();
-            int roomNumber = 0201;
+            int roomNumber = 303;
             using (var db = new HotelLeSequelleContext())
             {
                 var room = db.Rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
@@ -397,6 +404,7 @@ namespace HotelLeSequelle
                     if (customer != null)
                     {
                         Program.LoggedInUser = customer;
+                        (Program.LoggedInUser as Customer).Run();
                     }
                 }
                 catch (Exception)
@@ -416,6 +424,7 @@ namespace HotelLeSequelle
                     if (admin != null)
                     {
                         Program.LoggedInAdmin = admin;
+                        Program.LoggedInAdmin.Run();
                     }
                     else
                     {
@@ -453,6 +462,7 @@ namespace HotelLeSequelle
                     if (staff != null)
                     {
                         Program.LoggedInUser = staff;
+                        Program.LoggedInUser.Run();
                     }
                     else
                     {
@@ -491,6 +501,7 @@ namespace HotelLeSequelle
                     if (staff != null)
                     {
                         Program.LoggedInUser = staff;
+                        Program.LoggedInUser.Run();
                     }
                     else
                     {
@@ -569,8 +580,8 @@ namespace HotelLeSequelle
                 Console.WriteLine($"[{i + 1}] {menuList[i].Method.Name}");
             }
             Console.WriteLine("[0]. Exit");
-            int choice = TryParseReadLine(1, menuList.Count) - 1;
-            return choice;
+            int choise = TryParseReadLine(0, menuList.Count) - 1;
+            return choise;
         }
         public static void LogInCustomer()
         {
@@ -586,6 +597,7 @@ namespace HotelLeSequelle
                     if (customer != null)
                     {
                         Program.LoggedInUser = customer;
+                        Program.LoggedInUser.Run();
                     }
                 }
                 catch (Exception)
@@ -611,32 +623,29 @@ namespace HotelLeSequelle
                     if (receptionist != null)
                     {
                         Program.LoggedInUser = receptionist;
+                        Program.LoggedInUser.Run();
                     }
                     else
                     {
                         var waiter = db.Waiters.FirstOrDefault(w => w.UserName == userName && w.Password == password);
                         Program.LoggedInUser = waiter;
                     }
-                    if (Program.LoggedInUser == null)
-                    {
-                        Console.WriteLine("Incorrect username or password, returning to menu");
-                        Thread.Sleep(2000);
-                        ClearAboveCursor(5);
-                    }
-                    else
-                    {
-                        Console.Clear();
-
-
-                        Console.WriteLine($"Welcome ");
-                    }
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("ERROR LOG IN STAFF");
                     Thread.Sleep(1500);
-                    return;
                 }
+            }
+            if (Program.LoggedInUser == null)
+            {
+                Console.WriteLine("Incorrect username or password, returning to menu");
+                Thread.Sleep(2000);
+                ClearAboveCursor(5);
+            }
+            else
+            {
+                Program.LoggedInUser.Run();
             }
         }
         public static void LogInAdmin()
@@ -649,10 +658,11 @@ namespace HotelLeSequelle
             {
                 try
                 {
-                    var admin = db.Administrators.FirstOrDefault(a => a.Name == userName && a.Password == password);
+                    var admin = db.Administrators.SingleOrDefault(a => a.Name == userName && a.Password == password);
                     if (admin != null)
                     {
                         Program.LoggedInAdmin = admin;
+                        Program.LoggedInAdmin.Run();
                     }
                 }
                 catch (Exception)
@@ -660,13 +670,26 @@ namespace HotelLeSequelle
                     Console.WriteLine("Incorrect username or password");
                     Thread.Sleep(1500);
                     ClearAboveCursor(1);
-
                 }
             }
         }
         public static void RunDev()
         {
-            PrintMenu(DevMenu, "Developer Menu");
+            int choise;
+            bool loop = true;
+            while (loop)
+            {
+                choise = PrintMenu(DevMenu, "Developer Menu");
+                if (choise == 0)
+                {
+                    loop = false;
+                    break;
+                }
+                else
+                {
+                    DevMenu[choise]();
+                }
+            }
         }
         public static void SearchAvailableRooms()
         {
@@ -676,11 +699,30 @@ namespace HotelLeSequelle
             DateTime checkOutDate = DateTime.Parse(Console.ReadLine());
             using (var db = new HotelLeSequelleContext())
             {
-                var availableRooms = db.Rooms.Where(r => r.Reservations.All(res => res.CheckInDate > checkOutDate || res.CheckOutDate < checkInDate)).ToList();
-                foreach (var room in availableRooms)
+                var availableRooms = db.Rooms.Where(r => r.Reservations.All(res => res.CheckInDate > checkOutDate && res.CheckOutDate < checkInDate)).ToList();
+                if (availableRooms != null)
                 {
-                    Console.WriteLine(room.RoomNumber);
+                    foreach (var room in availableRooms)
+                    {
+                        Console.WriteLine($"{room.RoomNumber} is available between {checkInDate} and {checkOutDate}");
+                    }
+                    Console.WriteLine("Would you like to make a reservation? [Y/N]");
+                    string answer = Console.ReadLine();
+                    if (answer.ToLower() == "y")
+                    {
+                        if (Program.LoggedInUser is Customer)
+                        {
+                            (Program.LoggedInUser as Customer).MakeReservation();
+                        }
+                        else
+                        {
+                            Console.WriteLine("You need to be logged in as a customer to make a reservation");
+                            LogInCustomer();
+                            (Program.LoggedInUser as Customer).MakeReservation();
+                        }
+                    }
                 }
+
             }
         }
         public static void RegisterNewCustomer()
@@ -707,6 +749,23 @@ namespace HotelLeSequelle
             var db = new HotelLeSequelleContext();
             db.Customers.Add(customer);
             db.SaveChanges();
+        }
+        public static void Run()
+        {
+            int choise;
+            bool loop = true;
+            while (loop)
+            {
+                choise = PrintMenu(BaseMenu, "Main Menu");
+                if (choise == 0)
+                {
+                    loop = false;
+                }
+                else
+                {
+                    BaseMenu[choise]();
+                }
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace HotelLeSequelle.Models
 {
-    public partial class Waiter
+    public partial class Staff : Person
     {
         public override void Run()
         {

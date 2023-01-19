@@ -6,6 +6,7 @@
         public Waiter()
         {
             SideOrders = new HashSet<SideOrder>();
+
         }
 
     }

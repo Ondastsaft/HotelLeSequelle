@@ -2,19 +2,43 @@
 {
     public partial class Administrator
     {
-        public List<Action> MenuList = new List<Action>();
-        public void Menu()
-        {
-            List<Action> methods = new List<Action>() { AddHotel };
 
-            Console.WriteLine("Choose option");
-            for (int i = 0; i < methods.Count; i++)
+        public void Run()
+        {
+            List<Action> MenuList = new List<Action>();
+            MenuList = AddMethodsToMenuList(MenuList);
+            while (true)
             {
-                Console.WriteLine($"{i + 1}. {methods[i].Method.Name}");
+                Console.Clear();
+                Console.WriteLine($"Welcome to the {this.GetType().Name} Menu");
+                Console.WriteLine("Please select an option:");
+                for (int i = 0; i < MenuList.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {MenuList[i].Method.Name}");
+                }
+                Console.WriteLine("0. Exit");
+                Console.Write("Selection: ");
+                int selection = int.Parse(Console.ReadLine());
+                if (selection == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    MenuList[selection - 1]();
+                }
             }
-            Console.WriteLine("0. Exit");
-            int key = UniversalMethods.TryParseReadKey(1, methods.Count);
-            methods[key - 1].Invoke();
+        }
+
+        public List<Action> AddMethodsToMenuList(List<Action> menuList)
+        {
+            Type thisType = this.GetType();
+            var methodinfo = thisType.GetType().GetMethods();
+            foreach (var method in methodinfo)
+            {
+                method.CreateDelegate(typeof(Action), menuList);
+            }
+            return menuList;
         }
         private void AddHotel()
         {
@@ -85,6 +109,22 @@
             tempHotel.NumberOfRooms = roomCount;
             return tempHotel;
 
+        }
+        private void PrintAllReservations()
+        {
+            var Db = new HotelLeSequelleContext();
+            var reservations = Db.Reservations.ToList();
+            foreach (var reservation in reservations)
+            {
+                Console.WriteLine($"" +
+                    $"Reservation ID: {reservation.Id} " +
+                    $"Customer: {reservation.Customer.SirName} {reservation.Customer.LastName} " +
+                    $"Room: {reservation.Room.RoomNumber} " +
+                    $"Check in: {reservation.CheckInDate} " +
+                    $"Check out: {reservation.CheckOutDate})");
+            }
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
         }
     }
 }
