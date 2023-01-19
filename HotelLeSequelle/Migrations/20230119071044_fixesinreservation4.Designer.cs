@@ -4,6 +4,7 @@ using HotelLeSequelle;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelLeSequelle.Migrations
 {
     [DbContext(typeof(HotelLeSequelleContext))]
-    partial class HotelLeSequelleContextModelSnapshot : ModelSnapshot
+    [Migration("20230119071044_fixesinreservation4")]
+    partial class fixesinreservation4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,7 +189,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("Stock")
+                    b.Property<int?>("Stock")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -209,7 +211,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProductId")
@@ -218,7 +220,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int?>("ReceptionistId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomId")
+                    b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -242,10 +244,10 @@ namespace HotelLeSequelle.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("FloorId")
+                    b.Property<int?>("FloorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomNumber")
+                    b.Property<int?>("RoomNumber")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -263,16 +265,16 @@ namespace HotelLeSequelle.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("OrderTotal")
+                    b.Property<int?>("OrderTotal")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReservationId")
+                    b.Property<int?>("ReservationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StaffId")
+                    b.Property<int?>("StaffId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -300,7 +302,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SideOrderId")
+                    b.Property<int?>("SideOrderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -406,9 +408,7 @@ namespace HotelLeSequelle.Migrations
                 {
                     b.HasOne("HotelLeSequelle.Models.Customer", "Customer")
                         .WithMany("Reservations")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("HotelLeSequelle.Models.Product", null)
                         .WithMany("Reservations")
@@ -420,9 +420,7 @@ namespace HotelLeSequelle.Migrations
 
                     b.HasOne("HotelLeSequelle.Models.Room", "Room")
                         .WithMany("Reservations")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoomId");
 
                     b.Navigation("Customer");
 
@@ -435,9 +433,7 @@ namespace HotelLeSequelle.Migrations
                 {
                     b.HasOne("HotelLeSequelle.Models.Floor", "Floor")
                         .WithMany("Rooms")
-                        .HasForeignKey("FloorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FloorId");
 
                     b.Navigation("Floor");
                 });
@@ -451,14 +447,12 @@ namespace HotelLeSequelle.Migrations
                     b.HasOne("HotelLeSequelle.Models.Reservation", "Reservation")
                         .WithMany("SideOrders")
                         .HasForeignKey("ReservationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("HotelLeSequelle.Models.Staff", "Staff")
                         .WithMany("SideOrders")
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Reservation");
 
@@ -475,9 +469,7 @@ namespace HotelLeSequelle.Migrations
 
                     b.HasOne("HotelLeSequelle.Models.SideOrder", "SideOrder")
                         .WithMany("SideOrderProducts")
-                        .HasForeignKey("SideOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SideOrderId");
 
                     b.Navigation("Product");
 

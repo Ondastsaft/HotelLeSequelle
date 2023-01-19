@@ -2,7 +2,7 @@
 {
     public partial class Customer : Person
     {
-        public virtual ICollection<Reservation> Reservations { get; set; }
+        public List<Reservation> Reservations { get; set; }
         public string CardDetails { get; set; }
         public Customer()
         {

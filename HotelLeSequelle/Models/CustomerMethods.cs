@@ -41,21 +41,30 @@
             Console.WriteLine("When will you be leaving? (dd/mm/yyyy)");
             reservation.CheckOutDate = UniversalMethods.TryParseDateTime();
             var db = new HotelLeSequelleContext();
-            var availableRoom = db.Rooms.Where(r => r.Reservations.Any(res => res.CheckInDate <= reservation.CheckInDate && res.CheckOutDate >= reservation.CheckInDate)).FirstOrDefault();
-            if (availableRoom != null)
+            var reservations = db.Reservations.ToList();
+            var rooms = db.Rooms.ToList();
+            foreach (var room in rooms)
             {
-                Console.WriteLine($"Room {availableRoom.RoomNumber} is available from {reservation.CheckInDate} to {reservation.CheckOutDate}");
-                Console.WriteLine("Do you want to book this room? (y/n)");
-                if (Console.ReadLine().ToLower() == "y")
+                foreach (var res in reservations)
                 {
-                    reservation.Room = availableRoom;
-                    reservation.Customer = this;
-                    db.Reservations.Add(reservation);
-                    db.SaveChanges();
-                    Console.WriteLine("Reservation made!");
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
+                    if (room.Id == res.RoomId)
+                    {
+                        if (reservation.CheckInDate >= res.CheckInDate && reservation.CheckInDate <= res.CheckOutDate)
+                        {
+                            rooms.Remove(room);
+                        }
+                        else if (reservation.CheckOutDate >= res.CheckInDate && reservation.CheckOutDate <= res.CheckOutDate)
+                        {
+                            rooms.Remove(room);
+                        }
+                    }
                 }
+            }
+            Console.WriteLine("Here are the rooms available for your stay:");
+            int i = 1;
+            foreach (var room in rooms)
+            {
+                Console.WriteLine($"[{i}] Room number {room.RoomNumber} on floor {room.Floor.FloorNumber}");
             }
 
         }

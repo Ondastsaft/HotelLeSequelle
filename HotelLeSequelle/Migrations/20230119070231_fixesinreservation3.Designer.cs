@@ -4,6 +4,7 @@ using HotelLeSequelle;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelLeSequelle.Migrations
 {
     [DbContext(typeof(HotelLeSequelleContext))]
-    partial class HotelLeSequelleContextModelSnapshot : ModelSnapshot
+    [Migration("20230119070231_fixesinreservation3")]
+    partial class fixesinreservation3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,7 +189,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("Stock")
+                    b.Property<int?>("Stock")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -215,7 +217,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReceptionistId")
+                    b.Property<int>("ReceptionistId")
                         .HasColumnType("int");
 
                     b.Property<int>("RoomId")
@@ -300,7 +302,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SideOrderId")
+                    b.Property<int?>("SideOrderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -416,7 +418,9 @@ namespace HotelLeSequelle.Migrations
 
                     b.HasOne("HotelLeSequelle.Models.Receptionist", "Receptionist")
                         .WithMany("Reservations")
-                        .HasForeignKey("ReceptionistId");
+                        .HasForeignKey("ReceptionistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("HotelLeSequelle.Models.Room", "Room")
                         .WithMany("Reservations")
@@ -475,9 +479,7 @@ namespace HotelLeSequelle.Migrations
 
                     b.HasOne("HotelLeSequelle.Models.SideOrder", "SideOrder")
                         .WithMany("SideOrderProducts")
-                        .HasForeignKey("SideOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SideOrderId");
 
                     b.Navigation("Product");
 

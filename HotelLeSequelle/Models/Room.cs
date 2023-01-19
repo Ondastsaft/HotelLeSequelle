@@ -3,13 +3,13 @@
     public class Room
     {
         public int Id { get; set; }
-        public virtual Floor Floor { get; set; }
-        public int RoomNumber { get; set; }
+        public Floor Floor { get; set; }
         public int FloorId { get; set; }
-        public virtual ICollection<Reservation> Reservations { get; set; }
+        public int RoomNumber { get; set; }
+        public List<Reservation> Reservations { get; set; }
         public Room()
         {
-            Reservations = new HashSet<Reservation>();
+            Reservations = new List<Reservation>();
         }
     }
 }

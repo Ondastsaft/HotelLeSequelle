@@ -261,7 +261,7 @@ namespace HotelLeSequelle
                 var room = db.Rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
                 if (room != null)
                 {
-                    reservation.Room = room;
+                    //reservation.Room = room;
                 }
                 else
                 {
@@ -276,10 +276,10 @@ namespace HotelLeSequelle
             //reservation.CheckOutDate = DateTime.Parse(Console.ReadLine());
             reservation.CheckInDate = DateTime.Parse("2023-02-01");
             reservation.CheckOutDate = DateTime.Parse("2023-02-02");
-            reservation.Customer = (Customer)Program.LoggedInUser;
+            //reservation.Customer = (Customer)Program.LoggedInUser;
             using (var db = new HotelLeSequelleContext())
             {
-                db.Reservations.Add(reservation);
+                db.Rooms.Where(r => r.RoomNumber == roomNumber).SingleOrDefault().Reservations.Add(reservation);
                 db.SaveChanges();
             }
         }
@@ -376,23 +376,6 @@ namespace HotelLeSequelle
                 db.Products.Add(product5);
                 db.SaveChanges();
             }
-        }
-        public static void AddTestHotel()
-        {
-            Hotel tempHotel = new Hotel();
-            tempHotel.Name = "Hotel Le Sequelle";
-            tempHotel.StreetAdress = "Kungsgatan 1";
-            tempHotel.Locality = "Stockholm";
-            tempHotel.Country = "Sweden";
-            tempHotel.PhoneNumber = "08-1234567";
-            tempHotel.ZipCode = "16101";
-            tempHotel.Email = "info@hotellesequelle.com";
-            tempHotel.WebPage = "www.hotellesequelle.com";
-            Console.Clear();
-            tempHotel = AddTestFloorsAndRooms(tempHotel);
-            var Db = new HotelLeSequelleContext();
-            Db.Hotels.Add(tempHotel);
-            Db.SaveChanges();
         }
         public static void LogInTestCustomer()
         {
@@ -529,15 +512,35 @@ namespace HotelLeSequelle
                 }
             }
         }
+        public static void AddTestHotel()
+        {
+            Hotel tempHotel = new Hotel();
+            tempHotel.Name = "Hotel Le Sequelle";
+            tempHotel.StreetAdress = "Kungsgatan 1";
+            tempHotel.Locality = "Stockholm";
+            tempHotel.Country = "Sweden";
+            tempHotel.PhoneNumber = "08-1234567";
+            tempHotel.ZipCode = "16101";
+            tempHotel.Email = "info@hotellesequelle.com";
+            tempHotel.WebPage = "www.hotellesequelle.com";
+            Console.Clear();
+            var Db = new HotelLeSequelleContext();
+            tempHotel = AddTestFloorsAndRooms(tempHotel);
+            Db.Hotels.Add(tempHotel);
+            Db.SaveChanges();
+        }
         public static Hotel AddTestFloorsAndRooms(Hotel tempHotel)
         {
+            var db = new HotelLeSequelleContext();
+            //var hotel = db.Hotels.Where(h => h.Name == tempHotel.Name).FirstOrDefault();
             Console.WriteLine("How many floors does your hotel have?");
-            tempHotel.NumberOfFloors = UniversalMethods.TryParseReadLine();
+            int NumberOfFloors = UniversalMethods.TryParseReadLine();
             UniversalMethods.ClearAboveCursor(1);
-            for (int i = 1; i <= tempHotel.NumberOfFloors; i++)
+            for (int i = 1; i <= NumberOfFloors; i++)
             {
                 var tempFloor = new Floor();
                 tempFloor.FloorNumber = i;
+                tempFloor.Hotel = tempHotel;
                 Console.WriteLine($"How many rooms does floor {i} have?");
                 int rooms = UniversalMethods.TryParseReadLine();
                 for (int j = 1; j <= rooms; j++)
@@ -547,12 +550,15 @@ namespace HotelLeSequelle
                     {
                         tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i) + "0" + (j + 1)) : int.Parse((i) + "0" + (j + 1));
                     }
+
                     else
                     {
                         tempRoom.RoomNumber = (i < 10) ? int.Parse("0" + (i) + (j + 1)) : ((i) + (j + 1));
                     }
+                    tempRoom.Floor = tempFloor;
                     tempFloor.Rooms.Add(tempRoom);
                 }
+
                 tempHotel.Floors.Add(tempFloor);
             }
 
@@ -580,7 +586,7 @@ namespace HotelLeSequelle
                 Console.WriteLine($"[{i + 1}] {menuList[i].Method.Name}");
             }
             Console.WriteLine("[0]. Exit");
-            int choise = TryParseReadLine(0, menuList.Count) - 1;
+            int choise = TryParseReadLine(0, menuList.Count);
             return choise;
         }
         public static void LogInCustomer()
@@ -687,7 +693,7 @@ namespace HotelLeSequelle
                 }
                 else
                 {
-                    DevMenu[choise]();
+                    DevMenu[choise - 1]();
                 }
             }
         }
@@ -763,7 +769,7 @@ namespace HotelLeSequelle
                 }
                 else
                 {
-                    BaseMenu[choise]();
+                    BaseMenu[choise - 1]();
                 }
             }
         }
