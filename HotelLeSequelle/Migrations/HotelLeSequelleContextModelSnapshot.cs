@@ -24,11 +24,11 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.Administrator", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("AdministratorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdministratorId"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -38,18 +38,18 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("AdministratorId");
 
                     b.ToTable("Administrators");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Customer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"), 1L, 1);
 
                     b.Property<string>("CardDetails")
                         .IsRequired()
@@ -75,6 +75,9 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -95,18 +98,18 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("CustomerId");
 
                     b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Floor", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("FloorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FloorId"), 1L, 1);
 
                     b.Property<int>("FloorNumber")
                         .HasColumnType("int");
@@ -114,7 +117,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("FloorId");
 
                     b.HasIndex("HotelId");
 
@@ -123,11 +126,11 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.Hotel", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("HoteliD")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HoteliD"), 1L, 1);
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -167,18 +170,18 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("HoteliD");
 
                     b.ToTable("Hotels");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -190,18 +193,18 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("ProductId");
 
                     b.ToTable("Products");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Reservation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ReservationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationId"), 1L, 1);
 
                     b.Property<DateTime>("CheckInDate")
                         .HasColumnType("datetime2");
@@ -221,7 +224,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("ReservationId");
 
                     b.HasIndex("CustomerId");
 
@@ -236,11 +239,11 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.Room", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RoomId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"), 1L, 1);
 
                     b.Property<int>("FloorId")
                         .HasColumnType("int");
@@ -248,7 +251,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("RoomId");
 
                     b.HasIndex("FloorId");
 
@@ -257,11 +260,11 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.SideOrder", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("SideOrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SideOrderId"), 1L, 1);
 
                     b.Property<int>("OrderTotal")
                         .HasColumnType("int");
@@ -275,7 +278,7 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("StaffId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("SideOrderId");
 
                     b.HasIndex("ProductId");
 
@@ -288,11 +291,11 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.SideOrderProduct", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("SideOrderProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SideOrderProductId"), 1L, 1);
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
@@ -303,22 +306,22 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("SideOrderId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("SideOrderProductId");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("SideOrderId");
 
-                    b.ToTable("SideOrderProduct");
+                    b.ToTable("SideOrderProducts");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Staff", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("StaffId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffId"), 1L, 1);
 
                     b.Property<DateTime>("DateOfEmployment")
                         .HasColumnType("datetime2");
@@ -350,6 +353,9 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -370,7 +376,7 @@ namespace HotelLeSequelle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("StaffId");
 
                     b.ToTable("Staff");
 
@@ -381,12 +387,18 @@ namespace HotelLeSequelle.Migrations
                 {
                     b.HasBaseType("HotelLeSequelle.Models.Staff");
 
+                    b.Property<int>("ReceptionistID")
+                        .HasColumnType("int");
+
                     b.HasDiscriminator().HasValue("Receptionist");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Waiter", b =>
                 {
                     b.HasBaseType("HotelLeSequelle.Models.Staff");
+
+                    b.Property<int>("WaiterId")
+                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Waiter");
                 });
@@ -451,13 +463,13 @@ namespace HotelLeSequelle.Migrations
                     b.HasOne("HotelLeSequelle.Models.Reservation", "Reservation")
                         .WithMany("SideOrders")
                         .HasForeignKey("ReservationId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HotelLeSequelle.Models.Staff", "Staff")
                         .WithMany("SideOrders")
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Reservation");

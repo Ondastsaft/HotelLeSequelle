@@ -5,17 +5,34 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HotelLeSequelle.Migrations
 {
-    public partial class intit : Migration
+    public partial class FreshStart : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Administrators",
+                columns: table => new
+                {
+                    AdministratorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Administrators", x => x.AdministratorId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CardDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PersonId = table.Column<int>(type: "int", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SirName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -27,14 +44,14 @@ namespace HotelLeSequelle.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.CustomerId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Hotel",
+                name: "Hotels",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    HoteliD = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NumberOfRooms = table.Column<int>(type: "int", nullable: false),
                     NumberOfFloors = table.Column<int>(type: "int", nullable: false),
@@ -49,34 +66,38 @@ namespace HotelLeSequelle.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hotel", x => x.ID);
+                    table.PrimaryKey("PK_Hotels", x => x.HoteliD);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: true)
+                    Stock = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.ProductId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Staff",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    StaffId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateOfEmployment = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EmployeeNumber = table.Column<int>(type: "int", nullable: false),
-                    PassWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReceptionistID = table.Column<int>(type: "int", nullable: true),
+                    WaiterId = table.Column<int>(type: "int", nullable: true),
+                    PersonId = table.Column<int>(type: "int", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SirName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nationality = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -88,26 +109,26 @@ namespace HotelLeSequelle.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Staff", x => x.Id);
+                    table.PrimaryKey("PK_Staff", x => x.StaffId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Floors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    FloorId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FloorNumber = table.Column<int>(type: "int", nullable: false),
                     HotelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Floors", x => x.Id);
+                    table.PrimaryKey("PK_Floors", x => x.FloorId);
                     table.ForeignKey(
-                        name: "FK_Floors_Hotel_HotelId",
+                        name: "FK_Floors_Hotels_HotelId",
                         column: x => x.HotelId,
-                        principalTable: "Hotel",
-                        principalColumn: "ID",
+                        principalTable: "Hotels",
+                        principalColumn: "HoteliD",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -115,68 +136,67 @@ namespace HotelLeSequelle.Migrations
                 name: "Rooms",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RoomId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomNumber = table.Column<int>(type: "int", nullable: false),
-                    FloorId = table.Column<int>(type: "int", nullable: false)
+                    FloorId = table.Column<int>(type: "int", nullable: false),
+                    RoomNumber = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.PrimaryKey("PK_Rooms", x => x.RoomId);
                     table.ForeignKey(
                         name: "FK_Rooms_Floors_FloorId",
                         column: x => x.FloorId,
                         principalTable: "Floors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "FloorId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Reservations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ReservationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    RoomID = table.Column<int>(type: "int", nullable: false),
-                    ReceptionistId = table.Column<int>(type: "int", nullable: false),
+                    RoomId = table.Column<int>(type: "int", nullable: false),
+                    ReceptionistId = table.Column<int>(type: "int", nullable: true),
                     CheckInDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CheckOutDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.PrimaryKey("PK_Reservations", x => x.ReservationId);
                     table.ForeignKey(
                         name: "FK_Reservations_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reservations_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id");
+                        principalColumn: "ProductId");
                     table.ForeignKey(
-                        name: "FK_Reservations_Rooms_RoomID",
-                        column: x => x.RoomID,
+                        name: "FK_Reservations_Rooms_RoomId",
+                        column: x => x.RoomId,
                         principalTable: "Rooms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "RoomId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reservations_Staff_ReceptionistId",
                         column: x => x.ReceptionistId,
                         principalTable: "Staff",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "StaffId");
                 });
 
             migrationBuilder.CreateTable(
                 name: "SideOrders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    SideOrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StaffId = table.Column<int>(type: "int", nullable: false),
                     ReservationId = table.Column<int>(type: "int", nullable: false),
@@ -185,56 +205,51 @@ namespace HotelLeSequelle.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SideOrders", x => x.Id);
+                    table.PrimaryKey("PK_SideOrders", x => x.SideOrderId);
                     table.ForeignKey(
                         name: "FK_SideOrders_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id");
+                        principalColumn: "ProductId");
                     table.ForeignKey(
                         name: "FK_SideOrders_Reservations_ReservationId",
                         column: x => x.ReservationId,
                         principalTable: "Reservations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "ReservationId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SideOrders_Staff_StaffId",
                         column: x => x.StaffId,
                         principalTable: "Staff",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "StaffId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SideOrderProduct",
+                name: "SideOrderProducts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    SideOrderProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false),
-                    ReservationId = table.Column<int>(type: "int", nullable: true),
-                    SideOrderId = table.Column<int>(type: "int", nullable: true)
+                    SideOrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SideOrderProduct", x => x.Id);
+                    table.PrimaryKey("PK_SideOrderProducts", x => x.SideOrderProductId);
                     table.ForeignKey(
-                        name: "FK_SideOrderProduct_Products_ProductId",
+                        name: "FK_SideOrderProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
+                        principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SideOrderProduct_Reservations_ReservationId",
-                        column: x => x.ReservationId,
-                        principalTable: "Reservations",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SideOrderProduct_SideOrders_SideOrderId",
+                        name: "FK_SideOrderProducts_SideOrders_SideOrderId",
                         column: x => x.SideOrderId,
                         principalTable: "SideOrders",
-                        principalColumn: "Id");
+                        principalColumn: "SideOrderId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -258,9 +273,9 @@ namespace HotelLeSequelle.Migrations
                 column: "ReceptionistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_RoomID",
+                name: "IX_Reservations_RoomId",
                 table: "Reservations",
-                column: "RoomID");
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rooms_FloorId",
@@ -268,18 +283,13 @@ namespace HotelLeSequelle.Migrations
                 column: "FloorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SideOrderProduct_ProductId",
-                table: "SideOrderProduct",
+                name: "IX_SideOrderProducts_ProductId",
+                table: "SideOrderProducts",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SideOrderProduct_ReservationId",
-                table: "SideOrderProduct",
-                column: "ReservationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SideOrderProduct_SideOrderId",
-                table: "SideOrderProduct",
+                name: "IX_SideOrderProducts_SideOrderId",
+                table: "SideOrderProducts",
                 column: "SideOrderId");
 
             migrationBuilder.CreateIndex(
@@ -301,7 +311,10 @@ namespace HotelLeSequelle.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SideOrderProduct");
+                name: "Administrators");
+
+            migrationBuilder.DropTable(
+                name: "SideOrderProducts");
 
             migrationBuilder.DropTable(
                 name: "SideOrders");
@@ -325,7 +338,7 @@ namespace HotelLeSequelle.Migrations
                 name: "Floors");
 
             migrationBuilder.DropTable(
-                name: "Hotel");
+                name: "Hotels");
         }
     }
 }

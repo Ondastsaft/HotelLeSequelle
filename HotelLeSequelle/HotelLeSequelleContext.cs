@@ -19,7 +19,7 @@ namespace HotelLeSequelle
         public virtual DbSet<Waiter> Waiters { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<SideOrder> SideOrders { get; set; }
-        //public virtual DbSet<SideOrderProduct> SideOrderProducts { get; set; }
+        public virtual DbSet<SideOrderProduct> SideOrderProducts { get; set; }
         public virtual DbSet<Floor> Floors { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -34,8 +34,8 @@ namespace HotelLeSequelle
             //modelBuilder.Entity<Reservation>().HasOne(b => b.Room).WithMany(b => b.Reservations).HasForeignKey(r => r.RoomID).OnDelete(DeleteBehavior.Restrict);
             //modelBuilder.Entity<Reservation>().HasOne(b => b.Customer).WithMany(b => b.Reservations).HasForeignKey(k => k.CustomerId).OnDelete(DeleteBehavior.Restrict);
             //modelBuilder.Entity<Reservation>().HasOne(b => b.Receptionist).WithMany(r => r.Reservations).HasForeignKey(r => r.ReceptionistId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<SideOrder>().HasOne(t => t.Reservation).WithMany(b => b.SideOrders).HasForeignKey(b => b.ReservationId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<SideOrder>().HasOne(t => t.Staff).WithMany(p => p.SideOrders).HasForeignKey(p => p.StaffId).OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<SideOrder>().HasOne(t => t.Reservation).WithMany(b => b.SideOrders).HasForeignKey(b => b.ReservationId).OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<SideOrder>().HasOne(t => t.Staff).WithMany(p => p.SideOrders).HasForeignKey(p => p.StaffId).OnDelete(DeleteBehavior.Restrict);
             //modelBuilder.Entity<Room>().HasOne(r => r.Floor).WithMany(v => v.Rooms).HasForeignKey(v => v.FloorId).OnDelete(DeleteBehavior.Restrict);
         }
     }

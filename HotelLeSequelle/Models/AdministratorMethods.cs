@@ -117,7 +117,7 @@
             foreach (var reservation in reservations)
             {
                 Console.WriteLine($"" +
-                    $"Reservation ID: {reservation.Id} " +
+                    $"Reservation ID: {reservation.ReservationId} " +
                     $"Customer: {reservation.Customer.SirName} {reservation.Customer.LastName} " +
                     $"Room: {reservation.Room.RoomNumber} " +
                     $"Check in: {reservation.CheckInDate} " +

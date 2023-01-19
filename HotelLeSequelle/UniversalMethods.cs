@@ -29,6 +29,8 @@ namespace HotelLeSequelle
             SearchAvailableRooms,
             RunDev
         };
+        public static Person LoggedInUser { get; set; }
+        public static Administrator? LoggedInAdmin { get; set; }
 
         //Helpers
         public static int TryParseReadKey(int spanLow, int spanHigh)
@@ -276,7 +278,7 @@ namespace HotelLeSequelle
             //reservation.CheckOutDate = DateTime.Parse(Console.ReadLine());
             reservation.CheckInDate = DateTime.Parse("2023-02-01");
             reservation.CheckOutDate = DateTime.Parse("2023-02-02");
-            //reservation.Customer = (Customer)Program.LoggedInUser;
+            //reservation.Customer = (Customer)UniversalMethods.LoggedInUser;
             using (var db = new HotelLeSequelleContext())
             {
                 db.Rooms.Where(r => r.RoomNumber == roomNumber).SingleOrDefault().Reservations.Add(reservation);
@@ -386,11 +388,11 @@ namespace HotelLeSequelle
                     var customer = db.Customers.FirstOrDefault();
                     if (customer != null)
                     {
-                        Program.LoggedInUser = customer;
-                        (Program.LoggedInUser as Customer).Run();
+                        UniversalMethods.LoggedInUser = customer;
+                        (UniversalMethods.LoggedInUser as Customer).Run();
                     }
                 }
-                catch (Exception)
+                catch
                 {
                     Console.WriteLine("No Customers in database");
                     Thread.Sleep(1500);
@@ -406,8 +408,8 @@ namespace HotelLeSequelle
                     var admin = db.Administrators.FirstOrDefault();
                     if (admin != null)
                     {
-                        Program.LoggedInAdmin = admin;
-                        Program.LoggedInAdmin.Run();
+                        UniversalMethods.LoggedInAdmin = admin;
+                        UniversalMethods.LoggedInAdmin.Run();
                     }
                     else
                     {
@@ -444,8 +446,8 @@ namespace HotelLeSequelle
                     var staff = db.Receptionists.FirstOrDefault();
                     if (staff != null)
                     {
-                        Program.LoggedInUser = staff;
-                        Program.LoggedInUser.Run();
+                        UniversalMethods.LoggedInUser = staff;
+                        UniversalMethods.LoggedInUser.Run();
                     }
                     else
                     {
@@ -483,8 +485,8 @@ namespace HotelLeSequelle
                     var staff = db.Waiters.FirstOrDefault();
                     if (staff != null)
                     {
-                        Program.LoggedInUser = staff;
-                        Program.LoggedInUser.Run();
+                        UniversalMethods.LoggedInUser = staff;
+                        UniversalMethods.LoggedInUser.Run();
                     }
                     else
                     {
@@ -602,8 +604,8 @@ namespace HotelLeSequelle
                     var customer = db.Customers.FirstOrDefault(c => c.UserName == userName && c.Password == password);
                     if (customer != null)
                     {
-                        Program.LoggedInUser = customer;
-                        Program.LoggedInUser.Run();
+                        UniversalMethods.LoggedInUser = customer;
+                        UniversalMethods.LoggedInUser.Run();
                     }
                 }
                 catch (Exception)
@@ -628,13 +630,13 @@ namespace HotelLeSequelle
                     var receptionist = db.Receptionists.FirstOrDefault(s => s.UserName == userName && s.Password == password);
                     if (receptionist != null)
                     {
-                        Program.LoggedInUser = receptionist;
-                        Program.LoggedInUser.Run();
+                        UniversalMethods.LoggedInUser = receptionist;
+                        UniversalMethods.LoggedInUser.Run();
                     }
                     else
                     {
                         var waiter = db.Waiters.FirstOrDefault(w => w.UserName == userName && w.Password == password);
-                        Program.LoggedInUser = waiter;
+                        UniversalMethods.LoggedInUser = waiter;
                     }
                 }
                 catch (Exception)
@@ -643,7 +645,7 @@ namespace HotelLeSequelle
                     Thread.Sleep(1500);
                 }
             }
-            if (Program.LoggedInUser == null)
+            if (UniversalMethods.LoggedInUser == null)
             {
                 Console.WriteLine("Incorrect username or password, returning to menu");
                 Thread.Sleep(2000);
@@ -651,7 +653,7 @@ namespace HotelLeSequelle
             }
             else
             {
-                Program.LoggedInUser.Run();
+                UniversalMethods.LoggedInUser.Run();
             }
         }
         public static void LogInAdmin()
@@ -667,8 +669,8 @@ namespace HotelLeSequelle
                     var admin = db.Administrators.SingleOrDefault(a => a.Name == userName && a.Password == password);
                     if (admin != null)
                     {
-                        Program.LoggedInAdmin = admin;
-                        Program.LoggedInAdmin.Run();
+                        UniversalMethods.LoggedInAdmin = admin;
+                        UniversalMethods.LoggedInAdmin.Run();
                     }
                 }
                 catch (Exception)
@@ -716,15 +718,15 @@ namespace HotelLeSequelle
                     string answer = Console.ReadLine();
                     if (answer.ToLower() == "y")
                     {
-                        if (Program.LoggedInUser is Customer)
+                        if (UniversalMethods.LoggedInUser is Customer)
                         {
-                            (Program.LoggedInUser as Customer).MakeReservation();
+                            (UniversalMethods.LoggedInUser as Customer).MakeReservation();
                         }
                         else
                         {
                             Console.WriteLine("You need to be logged in as a customer to make a reservation");
                             LogInCustomer();
-                            (Program.LoggedInUser as Customer).MakeReservation();
+                            (UniversalMethods.LoggedInUser as Customer).MakeReservation();
                         }
                     }
                 }

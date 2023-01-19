@@ -2,7 +2,7 @@
 {
     public partial class Floor
     {
-        public int Id { get; set; }
+        public int FloorId { get; set; }
         public int FloorNumber { get; set; }
         public Hotel Hotel { get; set; }
         public int HotelId { get; set; }

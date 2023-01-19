@@ -2,7 +2,7 @@
 {
     public class Hotel
     {
-        public int ID { get; set; }
+        public int HoteliD { get; set; }
         public int NumberOfRooms { get; set; }
         public int NumberOfFloors { get; set; }
         public virtual ICollection<Floor> Floors { get; set; }

@@ -2,7 +2,7 @@
 {
     public class Room
     {
-        public int Id { get; set; }
+        public int RoomId { get; set; }
         public Floor Floor { get; set; }
         public int FloorId { get; set; }
         public int RoomNumber { get; set; }

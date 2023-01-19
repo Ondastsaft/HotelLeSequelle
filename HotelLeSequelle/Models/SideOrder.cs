@@ -2,7 +2,7 @@
 {
     public class SideOrder
     {
-        public int Id { get; set; }
+        public int SideOrderId { get; set; }
         public virtual List<SideOrderProduct> SideOrderProducts { get; set; }
         public Staff Staff { get; set; }
         public int StaffId { get; set; }
