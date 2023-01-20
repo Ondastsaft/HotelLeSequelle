@@ -5,7 +5,7 @@
 
         static void Main(string[] args)
         {
-            UniversalMethods.Run();
+            Base.Run();
         }
     }
 }

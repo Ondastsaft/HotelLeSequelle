@@ -102,9 +102,46 @@
             Console.WriteLine("Press any key to return to menu");
             Console.ReadKey();
         }
-        public void OrderRoomService()
+        public void CheckInReservation()
         {
+            var db = new HotelLeSequelleContext();
+            var reservations = db.Reservations.ToList();
+            var rooms = db.Rooms.ToList();
+            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
+            var customerReservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+            Console.WriteLine("Here are your reservations:");
+            foreach (var reservation in customerReservations)
+            {
+                var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
 
+            }
+            Console.WriteLine("Select a reservation to check in or press 0 to exit");
+            int choise = UniversalMethods.TryParseReadLine();
+            if (choise != 0)
+            {
+                var reservation = customerReservations[choise - 1];
+                reservation.CheckInDate = DateTime.Now;
+                db.SaveChanges();
+                Console.WriteLine("Reservation checked in");
+                Console.WriteLine("Press any key to return to menu");
+                Console.ReadKey();
+            }
+        }
+        public void OrderSideOrder()
+        {
+            var db = new HotelLeSequelleContext();
+            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
+            var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+            Console.WriteLine("Here are your reservations:");
+            foreach (var reservation in reservations)
+            {
+                var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+
+            }
+            Console.WriteLine("Press any key to return to menu");
+            Console.ReadKey();
         }
         public void MakeReservation(DateTime checkInDate, DateTime checkOutDate)
         {
