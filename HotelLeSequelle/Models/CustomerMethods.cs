@@ -4,8 +4,8 @@
     {
         public override void Run()
         {
-            List<Action> MenuList = new List<Action>();
-            MenuList = AddMethodsToMenuList(MenuList);
+            List<Action> MenuList = new List<Action>() { MakeReservation, ViewReservations, CheckInToRoom, CheckOutFromRoom, OrderSideOrder };
+
             while (true)
             {
                 Console.Clear();
@@ -17,7 +17,7 @@
                 }
                 Console.WriteLine("0. Exit");
                 Console.Write("Selection: ");
-                int selection = int.Parse(Console.ReadLine());
+                int selection = UniversalMethods.TryParseReadLine();
                 if (selection == 0)
                 {
                     break;
@@ -102,10 +102,121 @@
             Console.WriteLine("Press any key to return to menu");
             Console.ReadKey();
         }
-        public void OrderRoomService()
+        public void CheckInToRoom()
         {
+            var db = new HotelLeSequelleContext();
+            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
+            var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+            Console.WriteLine("Here are your reservations:");
+            foreach (var reservation in reservations)
+            {
+                var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
 
+            }
+            Console.WriteLine("Select a room to check in to or press 0 to exit");
+            int choise = UniversalMethods.TryParseReadLine();
+            if (choise != 0)
+            {
+                var reservation = reservations[choise - 1];
+                reservation.CheckInDate = DateTime.Now;
+                db.SaveChanges();
+                Console.WriteLine();
+                Console.WriteLine($"You have checked in to room number {reservation.Room.RoomNumber}");
+                Console.WriteLine("Press any key to return to menu");
+                Console.ReadKey();
+            }
         }
+        public void CheckOutFromRoom()
+        {
+            var db = new HotelLeSequelleContext();
+            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
+            var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+            Console.WriteLine("Here are your reservations:");
+            foreach (var reservation in reservations)
+            {
+                var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+
+            }
+            Console.WriteLine("Select a room to check out from or press 0 to exit");
+            int choise = UniversalMethods.TryParseReadLine();
+            if (choise != 0)
+            {
+                var reservation = reservations[choise - 1];
+                reservation.CheckOutDate = DateTime.Now;
+                db.SaveChanges();
+                Console.WriteLine();
+                Console.WriteLine($"You have checked out from room number {reservation.Room.RoomNumber}");
+                Console.WriteLine("Press any key to return to menu");
+                Console.ReadKey();
+            }
+        }
+        public void OrderSideOrder()
+        {
+            var db = new HotelLeSequelleContext();
+            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
+            var reservation = db.Reservations.Where(r => r.CustomerId == customer.CustomerId && DateTime.Now > r.CheckInDate && DateTime.Now < r.CheckOutDate).FirstOrDefault();
+            if (reservation != null)
+            {
+                var products = db.Products.ToList();
+                Console.WriteLine("Welcome to order room service:");
+                bool order = true;
+                SideOrder sideOrder = new SideOrder();
+                sideOrder.ReservationId = reservation.ReservationId;
+                Dictionary<int, int> produktidamount = new Dictionary<int, int>();
+                while (order)
+                {
+                    int i = 1;
+                    Console.Clear();
+                    foreach (var product in products)
+                    {
+                        Console.WriteLine($"[{i}] {product.Name} - {product.Price}$");
+                        i++;
+                    }
+                    Console.WriteLine("What would you like to order? (press 0 to exit)");
+                    int productIndex = UniversalMethods.TryParseReadLine();
+                    if (productIndex != 0)
+                    {
+
+                        Console.WriteLine($"How many {products[productIndex - 1].Name} would you like to order?");
+                        int orderedAmount = UniversalMethods.TryParseReadLine();
+                        produktidamount.Add(productIndex, orderedAmount);
+
+
+                        foreach (var kvp in produktidamount)
+                        {
+                            Console.WriteLine($"You have ordered {kvp.Value} {products[kvp.Key - 1].Name}");
+                        }
+
+                        Console.WriteLine("Would you like to order anything else? (y/n)");
+                        var orderMore = Console.ReadLine();
+                        order = orderMore == "y";
+                    }
+                }
+                Console.WriteLine("Thank you for your order");
+                db.SideOrders.Add(sideOrder);
+                foreach (var kvp in produktidamount)
+                {
+                    var product = db.Products.FirstOrDefault(p => p.ProductId == kvp.Key);
+                    var sideOrderProduct = new SideOrderProduct();
+                    sideOrderProduct.ProductId = product.ProductId;
+                    sideOrderProduct.SideOrderId = db.Reservations.Where(r => r.ReservationId == reservation.ReservationId).FirstOrDefault().SideOrders.LastOrDefault().SideOrderId;
+                    sideOrderProduct.Amount = kvp.Value;
+                    db.SideOrderProducts.Add(sideOrderProduct);
+                }
+                db.SaveChanges();
+                Console.WriteLine("Press any key to return to menu");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("You are not checked in to any room");
+                Console.WriteLine("Press any key to return to menu");
+                Console.ReadKey();
+            }
+        }
+
         public void MakeReservation(DateTime checkInDate, DateTime checkOutDate)
         {
             var reservation = new Reservation();

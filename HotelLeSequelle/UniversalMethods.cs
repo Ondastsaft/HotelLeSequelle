@@ -1,5 +1,6 @@
 ﻿using HotelLeSequelle.Models;
 using Microsoft.EntityFrameworkCore;
+
 namespace HotelLeSequelle
 {
     public static class UniversalMethods
@@ -207,9 +208,9 @@ namespace HotelLeSequelle
                 Console.WriteLine(centeredString);
             }
         }
-        public static void PrintInMiddle(string stringToPrint)
+        public static void PrintInMiddle(string stringToPrint, int fromTop)
         {
-            Console.SetCursorPosition(40, 3);
+            Console.SetCursorPosition(50, fromTop);
             Console.WriteLine(stringToPrint);
         }
 
@@ -394,8 +395,13 @@ namespace HotelLeSequelle
                 }
                 catch
                 {
-                    Console.WriteLine("No Customers in database");
-                    Thread.Sleep(1500);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        Console.Clear();
+                        UniversalMethods.PrintInMiddle("Error", 20);
+                        Thread.Sleep(1500);
+                    }
+
                 }
             }
         }
@@ -416,7 +422,7 @@ namespace HotelLeSequelle
                         Console.Clear();
                         for (int i = 0; i < 10; i++)
                         {
-                            PrintInMiddle("No waiter in database");
+                            PrintInMiddle("No waiter in database", 20);
                             Thread.Sleep(500);
                             Console.Clear();
                             Thread.Sleep(500);
@@ -425,14 +431,7 @@ namespace HotelLeSequelle
                 }
                 catch (Exception)
                 {
-                    Console.Clear();
-                    for (int i = 0; i < 10; i++)
-                    {
-                        PrintInMiddle("ERROR LOG IN TEST RECEPTIONIST");
-                        Thread.Sleep(500);
-                        Console.Clear();
-                        Thread.Sleep(500);
-                    }
+
                 }
             }
         }
@@ -454,7 +453,7 @@ namespace HotelLeSequelle
                         Console.Clear();
                         for (int i = 0; i < 10; i++)
                         {
-                            PrintInMiddle("No waiter in database");
+                            PrintInMiddle("No waiter in database", 20);
                             Thread.Sleep(500);
                             Console.Clear();
                             Thread.Sleep(500);
@@ -466,7 +465,7 @@ namespace HotelLeSequelle
                     Console.Clear();
                     for (int i = 0; i < 10; i++)
                     {
-                        PrintInMiddle("ERROR LOG IN TEST RECEPTIONIST");
+                        PrintInMiddle("ERROR LOG IN TEST RECEPTIONIST", 20);
                         Thread.Sleep(500);
                         Console.Clear();
                         Thread.Sleep(500);
@@ -493,7 +492,7 @@ namespace HotelLeSequelle
                         Console.Clear();
                         for (int i = 0; i < 10; i++)
                         {
-                            PrintInMiddle("No waiter in database");
+                            PrintInMiddle("No waiter in database", 20);
                             Thread.Sleep(500);
                             Console.Clear();
                             Thread.Sleep(500);
@@ -505,7 +504,7 @@ namespace HotelLeSequelle
                     Console.Clear();
                     for (int i = 0; i < 10; i++)
                     {
-                        PrintInMiddle("ERROR LOG IN TEST Waiter");
+                        PrintInMiddle("ERROR LOG IN TEST Waiter", 20);
                         Thread.Sleep(500);
                         Console.Clear();
                         Thread.Sleep(500);
