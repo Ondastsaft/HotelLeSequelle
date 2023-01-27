@@ -4,7 +4,6 @@
     {
         public int ReceptionistID { get; set; }
         public virtual List<Reservation> Reservations { get; set; }
-
     }
 
 }

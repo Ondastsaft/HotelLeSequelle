@@ -10,6 +10,7 @@
         public Room()
         {
             Reservations = new List<Reservation>();
+            Floor = new Floor();
         }
     }
 }

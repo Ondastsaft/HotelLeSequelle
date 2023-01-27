@@ -8,6 +8,10 @@
         public int Amount { get; set; }
         public virtual SideOrder SideOrder { get; set; }
         public int SideOrderId { get; set; }
-
+        public SideOrderProduct()
+        {
+            Product = new Product();
+            SideOrder = new SideOrder();
+        }
     }
 }

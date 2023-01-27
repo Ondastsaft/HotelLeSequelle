@@ -1,4 +1,6 @@
-﻿namespace HotelLeSequelle.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace HotelLeSequelle.Models
 {
     public class Reservation
     {
@@ -7,20 +9,17 @@
         public int CustomerId { get; set; }
         public Room Room { get; set; }
         public int RoomId { get; set; }
-        public virtual Receptionist? Receptionist { get; set; }
-        public int? ReceptionistId { get; set; }
+        [AllowNull]
+        public Receptionist Receptionist { get; set; }
+        [AllowNull]
         public List<SideOrder> SideOrders { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
 
         public Reservation()
         {
-            SideOrders = new List<SideOrder>();
+            Customer = new Customer();
+            Room = new Room();
         }
-
-
-
-
-
     }
 }

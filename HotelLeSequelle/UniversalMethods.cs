@@ -109,7 +109,7 @@ namespace HotelLeSequelle
             {
                 Console.WriteLine($"Enter choise between {spanLow} and {spanHigh}");
                 success = int.TryParse(Console.ReadLine(), out key);
-                if (key < spanLow && key < spanHigh)
+                if (key < spanLow && key > spanHigh)
                 {
                     success = false;
                 }
@@ -384,24 +384,11 @@ namespace HotelLeSequelle
         {
             using (var db = new HotelLeSequelleContext())
             {
-                try
+                var customer = db.Customers.FirstOrDefault();
+                if (customer != null)
                 {
-                    var customer = db.Customers.FirstOrDefault();
-                    if (customer != null)
-                    {
-                        UniversalMethods.LoggedInUser = customer;
-                        (UniversalMethods.LoggedInUser as Customer).Run();
-                    }
-                }
-                catch
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        Console.Clear();
-                        UniversalMethods.PrintInMiddle("Error", 20);
-                        Thread.Sleep(1500);
-                    }
-
+                    UniversalMethods.LoggedInUser = customer;
+                    (UniversalMethods.LoggedInUser as Customer).Run();
                 }
             }
         }
@@ -409,30 +396,25 @@ namespace HotelLeSequelle
         {
             using (var db = new HotelLeSequelleContext())
             {
-                try
-                {
-                    var admin = db.Administrators.FirstOrDefault();
-                    if (admin != null)
-                    {
-                        UniversalMethods.LoggedInAdmin = admin;
-                        UniversalMethods.LoggedInAdmin.Run();
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        for (int i = 0; i < 10; i++)
-                        {
-                            PrintInMiddle("No waiter in database", 20);
-                            Thread.Sleep(500);
-                            Console.Clear();
-                            Thread.Sleep(500);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
 
+                var admin = db.Administrators.FirstOrDefault();
+                if (admin != null)
+                {
+                    UniversalMethods.LoggedInAdmin = admin;
+                    UniversalMethods.LoggedInAdmin.Run();
                 }
+                else
+                {
+                    Console.Clear();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        PrintInMiddle("No waiter in database", 15);
+                        Thread.Sleep(500);
+                        Console.Clear();
+                        Thread.Sleep(500);
+                    }
+                }
+
             }
         }
         public static void LogInTestReceptionist()
@@ -440,38 +422,25 @@ namespace HotelLeSequelle
 
             using (var db = new HotelLeSequelleContext())
             {
-                try
+
+                var staff = db.Receptionists.FirstOrDefault();
+                if (staff != null)
                 {
-                    var staff = db.Receptionists.FirstOrDefault();
-                    if (staff != null)
-                    {
-                        UniversalMethods.LoggedInUser = staff;
-                        UniversalMethods.LoggedInUser.Run();
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        for (int i = 0; i < 10; i++)
-                        {
-                            PrintInMiddle("No waiter in database", 20);
-                            Thread.Sleep(500);
-                            Console.Clear();
-                            Thread.Sleep(500);
-                        }
-                    }
+                    UniversalMethods.LoggedInUser = staff;
+                    UniversalMethods.LoggedInUser.Run();
                 }
-                catch (Exception)
+                else
                 {
                     Console.Clear();
                     for (int i = 0; i < 10; i++)
                     {
-                        PrintInMiddle("ERROR LOG IN TEST RECEPTIONIST", 20);
+                        PrintInMiddle("No waiter in database", 15);
                         Thread.Sleep(500);
                         Console.Clear();
                         Thread.Sleep(500);
                     }
-
                 }
+
             }
         }
         public static void LogInTestWaiter()
@@ -479,39 +448,26 @@ namespace HotelLeSequelle
 
             using (var db = new HotelLeSequelleContext())
             {
-                try
+
+                var staff = db.Waiters.FirstOrDefault();
+                if (staff != null)
                 {
-                    var staff = db.Waiters.FirstOrDefault();
-                    if (staff != null)
-                    {
-                        UniversalMethods.LoggedInUser = staff;
-                        UniversalMethods.LoggedInUser.Run();
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        for (int i = 0; i < 10; i++)
-                        {
-                            PrintInMiddle("No waiter in database", 20);
-                            Thread.Sleep(500);
-                            Console.Clear();
-                            Thread.Sleep(500);
-                        }
-                    }
+                    UniversalMethods.LoggedInUser = staff;
+                    UniversalMethods.LoggedInUser.Run();
                 }
-                catch (Exception)
+                else
                 {
                     Console.Clear();
                     for (int i = 0; i < 10; i++)
                     {
-                        PrintInMiddle("ERROR LOG IN TEST Waiter", 20);
+                        PrintInMiddle("No waiter in database", 15);
                         Thread.Sleep(500);
                         Console.Clear();
                         Thread.Sleep(500);
                     }
-
                 }
             }
+
         }
         public static void AddTestHotel()
         {
@@ -598,21 +554,14 @@ namespace HotelLeSequelle
             string password = Console.ReadLine();
             using (var db = new HotelLeSequelleContext())
             {
-                try
+
+                var customer = db.Customers.FirstOrDefault(c => c.UserName == userName && c.Password == password);
+                if (customer != null)
                 {
-                    var customer = db.Customers.FirstOrDefault(c => c.UserName == userName && c.Password == password);
-                    if (customer != null)
-                    {
-                        UniversalMethods.LoggedInUser = customer;
-                        UniversalMethods.LoggedInUser.Run();
-                    }
+                    UniversalMethods.LoggedInUser = customer;
+                    UniversalMethods.LoggedInUser.Run();
                 }
-                catch (Exception)
-                {
-                    Console.WriteLine("Incorrect username or password");
-                    Thread.Sleep(1500);
-                    return;
-                }
+
 
             }
         }
@@ -624,25 +573,19 @@ namespace HotelLeSequelle
             string password = Console.ReadLine();
             using (var db = new HotelLeSequelleContext())
             {
-                try
+
+                var receptionist = db.Receptionists.FirstOrDefault(s => s.UserName == userName && s.Password == password);
+                if (receptionist != null)
                 {
-                    var receptionist = db.Receptionists.FirstOrDefault(s => s.UserName == userName && s.Password == password);
-                    if (receptionist != null)
-                    {
-                        UniversalMethods.LoggedInUser = receptionist;
-                        UniversalMethods.LoggedInUser.Run();
-                    }
-                    else
-                    {
-                        var waiter = db.Waiters.FirstOrDefault(w => w.UserName == userName && w.Password == password);
-                        UniversalMethods.LoggedInUser = waiter;
-                    }
+                    UniversalMethods.LoggedInUser = receptionist;
+                    UniversalMethods.LoggedInUser.Run();
                 }
-                catch (Exception)
+                else
                 {
-                    Console.WriteLine("ERROR LOG IN STAFF");
-                    Thread.Sleep(1500);
+                    var waiter = db.Waiters.FirstOrDefault(w => w.UserName == userName && w.Password == password);
+                    UniversalMethods.LoggedInUser = waiter;
                 }
+
             }
             if (UniversalMethods.LoggedInUser == null)
             {
@@ -663,21 +606,14 @@ namespace HotelLeSequelle
             string password = Console.ReadLine();
             using (var db = new HotelLeSequelleContext())
             {
-                try
+
+                var admin = db.Administrators.SingleOrDefault(a => a.Name == userName && a.Password == password);
+                if (admin != null)
                 {
-                    var admin = db.Administrators.SingleOrDefault(a => a.Name == userName && a.Password == password);
-                    if (admin != null)
-                    {
-                        UniversalMethods.LoggedInAdmin = admin;
-                        UniversalMethods.LoggedInAdmin.Run();
-                    }
+                    UniversalMethods.LoggedInAdmin = admin;
+                    UniversalMethods.LoggedInAdmin.Run();
                 }
-                catch (Exception)
-                {
-                    Console.WriteLine("Incorrect username or password");
-                    Thread.Sleep(1500);
-                    ClearAboveCursor(1);
-                }
+
             }
         }
         public static void RunDev()

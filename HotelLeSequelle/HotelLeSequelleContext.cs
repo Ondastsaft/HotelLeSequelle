@@ -31,6 +31,7 @@ namespace HotelLeSequelle
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Person>().HasAlternateKey(p => p.UserName);
             //modelBuilder.Entity<Reservation>().HasOne(b => b.Room).WithMany(b => b.Reservations).HasForeignKey(r => r.RoomID).OnDelete(DeleteBehavior.Restrict);
             //modelBuilder.Entity<Reservation>().HasOne(b => b.Customer).WithMany(b => b.Reservations).HasForeignKey(k => k.CustomerId).OnDelete(DeleteBehavior.Restrict);
             //modelBuilder.Entity<Reservation>().HasOne(b => b.Receptionist).WithMany(r => r.Reservations).HasForeignKey(r => r.ReceptionistId).OnDelete(DeleteBehavior.Restrict);

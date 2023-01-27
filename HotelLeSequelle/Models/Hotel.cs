@@ -16,7 +16,16 @@
         public string WebPage { get; set; }
         public Hotel()
         {
-            Floors = new HashSet<Floor>();
+            Floors = new List<Floor>();
+            Name = "NOT YET PROVIDED";
+            Country = "NOT YET PROVIDED";
+            StreetAdress = "NOT YET PROVIDED";
+            ZipCode = "NOT YET PROVIDED";
+            Locality = "NOT YET PROVIDED";
+            PhoneNumber = "NOT YET PROVIDED";
+            Email = "NOT YET PROVIDED";
+            WebPage = "NOT YET PROVIDED";
         }
+
     }
 }

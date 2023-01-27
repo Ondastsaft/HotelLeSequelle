@@ -7,7 +7,9 @@
         public string Password { get; set; }
         public Administrator()
         {
-
+            Name = "NOT YET PROVIDED";
+            Password = "NOT YET PROVIDED";
         }
+
     }
 }

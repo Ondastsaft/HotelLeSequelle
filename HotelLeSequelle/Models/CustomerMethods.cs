@@ -155,68 +155,68 @@
         public void OrderSideOrder()
         {
             var db = new HotelLeSequelleContext();
-            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
-            var reservation = db.Reservations.Where(r => r.CustomerId == customer.CustomerId && DateTime.Now > r.CheckInDate && DateTime.Now < r.CheckOutDate).FirstOrDefault();
+            var reservation = Reservations.FirstOrDefault(r => r.CheckInDate > DateTime.Now && r.CheckOutDate < DateTime.Now);
             if (reservation != null)
             {
                 var products = db.Products.ToList();
                 Console.WriteLine("Welcome to order room service:");
-                bool order = true;
-                SideOrder sideOrder = new SideOrder();
-                sideOrder.ReservationId = reservation.ReservationId;
-                Dictionary<int, int> produktidamount = new Dictionary<int, int>();
-                while (order)
-                {
-                    int i = 1;
-                    Console.Clear();
-                    foreach (var product in products)
-                    {
-                        Console.WriteLine($"[{i}] {product.Name} - {product.Price}$");
-                        i++;
-                    }
-                    Console.WriteLine("What would you like to order? (press 0 to exit)");
-                    int productIndex = UniversalMethods.TryParseReadLine();
-                    if (productIndex != 0)
-                    {
-
-                        Console.WriteLine($"How many {products[productIndex - 1].Name} would you like to order?");
-                        int orderedAmount = UniversalMethods.TryParseReadLine();
-                        produktidamount.Add(productIndex, orderedAmount);
-
-
-                        foreach (var kvp in produktidamount)
-                        {
-                            Console.WriteLine($"You have ordered {kvp.Value} {products[kvp.Key - 1].Name}");
-                        }
-
-                        Console.WriteLine("Would you like to order anything else? (y/n)");
-                        var orderMore = Console.ReadLine();
-                        order = orderMore == "y";
-                    }
-                }
-                Console.WriteLine("Thank you for your order");
-                db.SideOrders.Add(sideOrder);
-                foreach (var kvp in produktidamount)
-                {
-                    var product = db.Products.FirstOrDefault(p => p.ProductId == kvp.Key);
-                    var sideOrderProduct = new SideOrderProduct();
-                    sideOrderProduct.ProductId = product.ProductId;
-                    sideOrderProduct.SideOrderId = db.Reservations.Where(r => r.ReservationId == reservation.ReservationId).FirstOrDefault().SideOrders.LastOrDefault().SideOrderId;
-                    sideOrderProduct.Amount = kvp.Value;
-                    db.SideOrderProducts.Add(sideOrderProduct);
-                }
-                db.SaveChanges();
-                Console.WriteLine("Press any key to return to menu");
-                Console.ReadKey();
             }
-            else
+            var orderedProducts = GetProductsForSideOrder();
+
+            Console.WriteLine("Thank you for your order");
+
+            foreach (var kvp in orderedProducts)
             {
-                Console.WriteLine("You are not checked in to any room");
-                Console.WriteLine("Press any key to return to menu");
-                Console.ReadKey();
+                var sideorderproducts = new List<SideOrderProduct>();
+                var sideOrderProduct = new SideOrderProduct();
             }
+            db.SaveChanges();
+            Console.WriteLine("Press any key to return to menu");
+            Console.ReadKey();
+        }
+        public void NotCheckedInMessage()
+        {
+            Console.WriteLine("You are not checked in to any room");
+            Console.WriteLine("Press any key to return to menu");
+            Console.ReadKey();
         }
 
+        public Dictionary<int, Product> GetProductsForSideOrder()
+        {
+            var db = new HotelLeSequelleContext();
+            bool order = true;
+            var amountProduct = new Dictionary<int, Product>();
+            while (order)
+            {
+                int i = 1;
+                var products = db.Products.ToList();
+                Console.Clear();
+                foreach (var product in products)
+                {
+                    Console.WriteLine($"[{i}] {product.Name} - {product.Price}$");
+                    i++;
+                }
+                Console.WriteLine("What would you like to order? (press 0 to exit)");
+                int productIndex = UniversalMethods.TryParseReadLine();
+                if (productIndex != 0)
+                {
+
+                    Console.WriteLine($"How many {products[productIndex - 1].Name} would you like to order?");
+                    int orderedAmount = UniversalMethods.TryParseReadLine();
+                    amountProduct.Add(orderedAmount, products[productIndex - 1]);
+
+                    foreach (var kvp in amountProduct)
+                    {
+                        Console.WriteLine($"You have ordered {kvp.Key} {kvp.Value.Name}");
+                    }
+
+                    Console.WriteLine("Would you like to order anything else? (y/n)");
+                    var orderMore = Console.ReadLine();
+                    order = orderMore == "y" ? false : true;
+                }
+            }
+            return amountProduct;
+        }
         public void MakeReservation(DateTime checkInDate, DateTime checkOutDate)
         {
             var reservation = new Reservation();
@@ -241,3 +241,4 @@
         }
     }
 }
+
