@@ -18,7 +18,7 @@
                 }
                 Console.WriteLine("0. Exit");
                 Console.Write("Selection: ");
-                int selection = int.Parse(Console.ReadLine());
+                int selection = UniversalMethods.TryParseReadLine();
                 if (selection == 0)
                 {
                     break;
@@ -118,7 +118,7 @@
             {
                 Console.WriteLine($"" +
                     $"Reservation ID: {reservation.ReservationId} " +
-                    $"Customer: {reservation.Customer.SirName} {reservation.Customer.LastName} " +
+                    $"Customer: {reservation.Customer.FirstName} {reservation.Customer.LastName} " +
                     $"Room: {reservation.Room.RoomNumber} " +
                     $"Check in: {reservation.CheckInDate} " +
                     $"Check out: {reservation.CheckOutDate})");

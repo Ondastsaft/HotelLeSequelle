@@ -5,7 +5,7 @@ namespace HotelLeSequelle
 {
     public static class UniversalMethods
     {
-        public static List<Action> DevMenu = new List<Action>()
+        private static readonly List<Action> DevMenu = new List<Action>()
                 {
                     TruncateAllTables,
                     DeleteAllTables,
@@ -17,11 +17,8 @@ namespace HotelLeSequelle
                     AddTestPersons,
                     AddTestProducts,
                     AddReservation,
-
-
-
                 };
-        public static List<Action> BaseMenu = new List<Action>()
+        private static readonly List<Action> BaseMenu = new List<Action>()
         {
             LogInCustomer,
             LogInStaff,
@@ -30,7 +27,7 @@ namespace HotelLeSequelle
             SearchAvailableRooms,
             RunDev
         };
-        public static Person LoggedInUser { get; set; }
+        public static Person? LoggedInUser { get; set; }
         public static Administrator? LoggedInAdmin { get; set; }
 
         //Helpers
@@ -213,6 +210,11 @@ namespace HotelLeSequelle
             Console.SetCursorPosition(50, fromTop);
             Console.WriteLine(stringToPrint);
         }
+        public static void ContinueMessage()
+        {
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
 
         //Dev
         public static void TruncateAllTables()
@@ -282,15 +284,25 @@ namespace HotelLeSequelle
             //reservation.Customer = (Customer)UniversalMethods.LoggedInUser;
             using (var db = new HotelLeSequelleContext())
             {
-                db.Rooms.Where(r => r.RoomNumber == roomNumber).SingleOrDefault().Reservations.Add(reservation);
-                db.SaveChanges();
+                var room = db.Rooms.Where(r => r.RoomNumber == roomNumber).SingleOrDefault();
+                if (room != null)
+                {
+                    room.Reservations.Add(reservation);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    Console.WriteLine("Room not found");
+                    Thread.Sleep(1500);
+                }
+
             }
         }
         public static void AddTestPersons()
         {
             var customer = new Customer()
             {
-                SirName = "John",
+                FirstName = "John",
                 LastName = "Doe",
                 StreetAdress = "123 Main St",
                 Locality = "New York",
@@ -306,7 +318,7 @@ namespace HotelLeSequelle
             {
                 UserName = "Waiter",
                 Password = "Waiter1",
-                SirName = "Mike",
+                FirstName = "Mike",
                 LastName = "Tyson",
                 StreetAdress = "Home",
                 EmployeeNumber = 1,
@@ -321,7 +333,7 @@ namespace HotelLeSequelle
             {
                 UserName = "Receptionist",
                 Password = "Receptionist1",
-                SirName = "Eric",
+                FirstName = "Eric",
                 LastName = "Magnusson",
                 StreetAdress = "Home",
                 EmployeeNumber = 2,
@@ -387,8 +399,11 @@ namespace HotelLeSequelle
                 var customer = db.Customers.FirstOrDefault();
                 if (customer != null)
                 {
-                    UniversalMethods.LoggedInUser = customer;
-                    (UniversalMethods.LoggedInUser as Customer).Run();
+                    LoggedInUser = customer;
+                    if (LoggedInUser is Customer)
+                    {
+                        LoggedInUser.Run();
+                    }
                 }
             }
         }
@@ -543,15 +558,15 @@ namespace HotelLeSequelle
                 Console.WriteLine($"[{i + 1}] {menuList[i].Method.Name}");
             }
             Console.WriteLine("[0]. Exit");
-            int choise = TryParseReadLine(0, menuList.Count);
+            int choise = TryParseReadLine(-1, menuList.Count);
             return choise;
         }
         public static void LogInCustomer()
         {
             Console.WriteLine("Please enter your username");
-            string userName = Console.ReadLine();
+            string? userName = Console.ReadLine();
             Console.WriteLine("Please enter your password");
-            string password = Console.ReadLine();
+            string? password = Console.ReadLine();
             using (var db = new HotelLeSequelleContext())
             {
 
@@ -568,9 +583,9 @@ namespace HotelLeSequelle
         public static void LogInStaff()
         {
             Console.WriteLine("Please enter your username");
-            string userName = Console.ReadLine();
+            string? userName = Console.ReadLine();
             Console.WriteLine("Please enter your password");
-            string password = Console.ReadLine();
+            string? password = Console.ReadLine();
             using (var db = new HotelLeSequelleContext())
             {
 
@@ -601,9 +616,9 @@ namespace HotelLeSequelle
         public static void LogInAdmin()
         {
             Console.WriteLine("Please enter your username");
-            string userName = Console.ReadLine();
+            string? userName = Console.ReadLine();
             Console.WriteLine("Please enter your password");
-            string password = Console.ReadLine();
+            string? password = Console.ReadLine();
             using (var db = new HotelLeSequelleContext())
             {
 
@@ -637,9 +652,9 @@ namespace HotelLeSequelle
         public static void SearchAvailableRooms()
         {
             Console.WriteLine("Please enter the date you want to check in");
-            DateTime checkInDate = DateTime.Parse(Console.ReadLine());
+            DateTime checkInDate = TryParseDateTime();
             Console.WriteLine("Please enter the date you want to check out");
-            DateTime checkOutDate = DateTime.Parse(Console.ReadLine());
+            DateTime checkOutDate = TryParseDateTime();
             using (var db = new HotelLeSequelleContext())
             {
                 var availableRooms = db.Rooms.Where(r => r.Reservations.All(res => res.CheckInDate > checkOutDate && res.CheckOutDate < checkInDate)).ToList();
@@ -650,18 +665,25 @@ namespace HotelLeSequelle
                         Console.WriteLine($"{room.RoomNumber} is available between {checkInDate} and {checkOutDate}");
                     }
                     Console.WriteLine("Would you like to make a reservation? [Y/N]");
-                    string answer = Console.ReadLine();
-                    if (answer.ToLower() == "y")
+                    string? answer = Console.ReadLine();
+                    if (answer != null && answer.ToLower() == "y")
                     {
-                        if (UniversalMethods.LoggedInUser is Customer)
+                        if (LoggedInUser is Customer)
                         {
-                            (UniversalMethods.LoggedInUser as Customer).MakeReservation();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                            (LoggedInUser as Customer).MakeReservation();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                         }
                         else
                         {
                             Console.WriteLine("You need to be logged in as a customer to make a reservation");
                             LogInCustomer();
-                            (UniversalMethods.LoggedInUser as Customer).MakeReservation();
+                            if (LoggedInUser is Customer)
+                            {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                                (LoggedInUser as Customer).MakeReservation();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                            }
                         }
                     }
                 }
@@ -672,7 +694,7 @@ namespace HotelLeSequelle
         {
             var customer = new Customer();
             Console.WriteLine("Please enter your first name");
-            customer.SirName = Console.ReadLine();
+            customer.FirstName = Console.ReadLine();
             Console.WriteLine("Please enter your last name");
             customer.LastName = Console.ReadLine();
             Console.WriteLine("Please enter your street adress");

@@ -2,8 +2,12 @@
 {
     public partial class Receptionist : Staff
     {
-        public int ReceptionistID { get; set; }
-        public virtual List<Reservation> Reservations { get; set; }
+        public int ReceptionistId { get; set; }
+        public List<Reservation>? Reservations { get; set; }
+        public Receptionist()
+        {
+            Reservations = new List<Reservation>();
+        }
     }
 
 }

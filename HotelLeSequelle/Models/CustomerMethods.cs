@@ -63,93 +63,149 @@
             }
             Console.WriteLine("Here are the rooms available for your stay:");
             int i = 1;
+            bool foundRoom = false;
             foreach (var room in rooms)
             {
                 var floor = db.Floors.FirstOrDefault(f => f.FloorId == room.FloorId);
-                Console.WriteLine($"[{i}] Room number {room.RoomNumber} on floor {floor.FloorNumber}");
+                if (floor != null)
+                {
+                    Console.WriteLine($"[{i}] Room number {room.RoomNumber} on floor {floor.FloorNumber}");
+                    foundRoom = true;
+                }
                 i++;
             }
 
-            Console.WriteLine("Select a room to make a reservation or press 0 to exit");
-            int choise = UniversalMethods.TryParseReadLine();
-            if (choise != 0)
+            if (!foundRoom)
             {
-                var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
-                reservation.Room = rooms[choise - 1];
-                reservation.Customer = (customer);
-                db.Reservations.Add(reservation);
-                db.SaveChanges();
-                Console.WriteLine();
-                Console.WriteLine($"{reservation.Room.RoomNumber} booked for {reservation.Customer.SirName} {reservation.Customer.LastName} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+                Console.WriteLine("No rooms available for your stay");
                 Console.WriteLine("Press any key to return to menu");
                 Console.ReadKey();
             }
-
+            else
+            {
+                Console.WriteLine("Select a room to make a reservation or press 0 to exit");
+                int choise = UniversalMethods.TryParseReadLine();
+                if (choise != 0)
+                {
+                    var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
+                    reservation.Room = rooms[choise - 1];
+                    if (customer != null)
+                    {
+                        reservation.Customer = customer;
+                        db.Reservations.Add(reservation);
+                        db.SaveChanges();
+                        Console.WriteLine();
+                        Console.WriteLine($"{reservation.Room.RoomNumber} booked for {reservation.Customer.FirstName} {reservation.Customer.LastName} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+                        Console.WriteLine("Press any key to return to menu");
+                        Console.ReadKey();
+                    }
+                }
+            }
 
         }
+        //public void MakeReservation(DateTime checkInDate, DateTime checkOutDate)
+        //    var reservation = new Reservation();
+        //    var db = new HotelLeSequelleContext();
+        //    var availableRoom = db.Rooms.Where(r => r.Reservations.Any(res => checkInDate <= reservation.CheckInDate && checkOutDate >= reservation.CheckInDate)).FirstOrDefault();
+        //    if (availableRoom != null)
+        //    {
+        //        Console.WriteLine($"Room {availableRoom.RoomNumber} is available from {reservation.CheckInDate} to {reservation.CheckOutDate}");
+        //        Console.WriteLine("Do you want to book this room? (y/n)");
+        //        if (Console.ReadLine().ToLower() == "y")
+        //        {
+        //            reservation.Room = availableRoom;
+        //            reservation.Customer = this;
+        //            db.Reservations.Add(reservation);
+        //            db.SaveChanges();
+        //            Console.WriteLine("Reservation made!");
+        //            Console.WriteLine("Press any key to continue");
+        //            Console.ReadKey();
+        //        }
+        //    }
+
+        //}
         public void ViewReservations()
         {
             var db = new HotelLeSequelleContext();
-            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
-            var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
-            Console.WriteLine("Here are your reservations:");
-            foreach (var reservation in reservations)
+            var customer = db.Customers.FirstOrDefault(c => c.CustomerId == CustomerId);
+            if (customer != null)
             {
-                var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
-                Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
-
+                var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+                Console.WriteLine("Here are your reservations:");
+                foreach (var reservation in reservations)
+                {
+                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                    if (room != null)
+                    {
+                        Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+                    }
+                }
             }
-            Console.WriteLine("Press any key to return to menu");
-            Console.ReadKey();
+            else
+            {
+                Console.WriteLine("No reservations found");
+            }
+            UniversalMethods.ContinueMessage();
         }
         public void CheckInToRoom()
         {
             var db = new HotelLeSequelleContext();
             var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
-            var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
-            Console.WriteLine("Here are your reservations:");
-            foreach (var reservation in reservations)
+            if (customer != null)
             {
-                var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
-                Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
-
+                var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+                Console.WriteLine("Here are your reservations:");
+                foreach (var reservation in reservations)
+                {
+                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                    if (room != null)
+                    {
+                        Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+                    }
+                }
+                Console.WriteLine("Select a room to check in to or press 0 to exit");
+                int choise = UniversalMethods.TryParseReadLine();
+                if (choise != 0)
+                {
+                    var reservation = reservations[choise - 1];
+                    reservation.CheckInDate = DateTime.Now;
+                    db.SaveChanges();
+                    Console.WriteLine();
+                    Console.WriteLine($"You have checked in to room number {reservation.Room.RoomNumber}");
+                }
             }
-            Console.WriteLine("Select a room to check in to or press 0 to exit");
-            int choise = UniversalMethods.TryParseReadLine();
-            if (choise != 0)
+            else
             {
-                var reservation = reservations[choise - 1];
-                reservation.CheckInDate = DateTime.Now;
-                db.SaveChanges();
-                Console.WriteLine();
-                Console.WriteLine($"You have checked in to room number {reservation.Room.RoomNumber}");
-                Console.WriteLine("Press any key to return to menu");
-                Console.ReadKey();
+                Console.WriteLine("No reservations found");
             }
+            UniversalMethods.ContinueMessage();
         }
         public void CheckOutFromRoom()
         {
             var db = new HotelLeSequelleContext();
             var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
-            var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
-            Console.WriteLine("Here are your reservations:");
-            foreach (var reservation in reservations)
+            if (customer != null)
             {
-                var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
-                Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
-
-            }
-            Console.WriteLine("Select a room to check out from or press 0 to exit");
-            int choise = UniversalMethods.TryParseReadLine();
-            if (choise != 0)
-            {
-                var reservation = reservations[choise - 1];
-                reservation.CheckOutDate = DateTime.Now;
-                db.SaveChanges();
-                Console.WriteLine();
-                Console.WriteLine($"You have checked out from room number {reservation.Room.RoomNumber}");
-                Console.WriteLine("Press any key to return to menu");
-                Console.ReadKey();
+                var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+                Console.WriteLine("Here are your reservations:");
+                foreach (var reservation in reservations)
+                {
+                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                    if (room != null)
+                    {
+                        Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+                    }
+                }
+                Console.WriteLine("Select a room to check out from or press 0 to exit");
+                int choise = UniversalMethods.TryParseReadLine();
+                if (choise != 0)
+                {
+                    var reservation = reservations[choise - 1];
+                    reservation.CheckOutDate = DateTime.Now;
+                    db.SaveChanges();
+                    Console.WriteLine();
+                    Console.WriteLine($"You have checked out from room number {reservation.Room.RoomNumber}");
+                }
             }
         }
         public void OrderSideOrder()
@@ -217,28 +273,7 @@
             }
             return amountProduct;
         }
-        public void MakeReservation(DateTime checkInDate, DateTime checkOutDate)
-        {
-            var reservation = new Reservation();
-            var db = new HotelLeSequelleContext();
-            var availableRoom = db.Rooms.Where(r => r.Reservations.Any(res => checkInDate <= reservation.CheckInDate && checkOutDate >= reservation.CheckInDate)).FirstOrDefault();
-            if (availableRoom != null)
-            {
-                Console.WriteLine($"Room {availableRoom.RoomNumber} is available from {reservation.CheckInDate} to {reservation.CheckOutDate}");
-                Console.WriteLine("Do you want to book this room? (y/n)");
-                if (Console.ReadLine().ToLower() == "y")
-                {
-                    reservation.Room = availableRoom;
-                    reservation.Customer = this;
-                    db.Reservations.Add(reservation);
-                    db.SaveChanges();
-                    Console.WriteLine("Reservation made!");
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
-                }
-            }
 
-        }
     }
 }
 
