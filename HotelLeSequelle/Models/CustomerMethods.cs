@@ -48,7 +48,7 @@
             {
                 foreach (var res in reservations)
                 {
-                    if (room.RoomId == res.RoomId)
+                    if (room.RoomId == res.ReservationRoom.RoomId)
                     {
                         if (reservation.CheckInDate >= res.CheckInDate && reservation.CheckInDate <= res.CheckOutDate)
                         {
@@ -88,14 +88,14 @@
                 if (choise != 0)
                 {
                     var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
-                    reservation.Room = rooms[choise - 1];
+                    reservation.ReservationRoom = rooms[choise - 1];
                     if (customer != null)
                     {
-                        reservation.Customer = customer;
+                        reservation.ReservationCustomer = customer;
                         db.Reservations.Add(reservation);
                         db.SaveChanges();
                         Console.WriteLine();
-                        Console.WriteLine($"{reservation.Room.RoomNumber} booked for {reservation.Customer.FirstName} {reservation.Customer.LastName} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
+                        Console.WriteLine($"{reservation.ReservationRoom.RoomNumber} booked for {reservation.ReservationCustomer.FirstName} {reservation.ReservationCustomer.LastName} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
                         Console.WriteLine("Press any key to return to menu");
                         Console.ReadKey();
                     }
@@ -130,11 +130,11 @@
             var customer = db.Customers.FirstOrDefault(c => c.CustomerId == CustomerId);
             if (customer != null)
             {
-                var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+                var reservations = customer.Reservations.ToList();
                 Console.WriteLine("Here are your reservations:");
                 foreach (var reservation in reservations)
                 {
-                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.ReservationRoom.RoomId);
                     if (room != null)
                     {
                         Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
@@ -153,11 +153,11 @@
             var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
             if (customer != null)
             {
-                var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+                var reservations = customer.Reservations.ToList();
                 Console.WriteLine("Here are your reservations:");
                 foreach (var reservation in reservations)
                 {
-                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.ReservationRoom.RoomId);
                     if (room != null)
                     {
                         Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
@@ -171,7 +171,7 @@
                     reservation.CheckInDate = DateTime.Now;
                     db.SaveChanges();
                     Console.WriteLine();
-                    Console.WriteLine($"You have checked in to room number {reservation.Room.RoomNumber}");
+                    Console.WriteLine($"You have checked in to room number {reservation.ReservationRoom.RoomNumber}");
                 }
             }
             else
@@ -186,11 +186,11 @@
             var customer = db.Customers.FirstOrDefault(c => c.CustomerId == this.CustomerId);
             if (customer != null)
             {
-                var reservations = db.Reservations.Where(r => r.CustomerId == customer.CustomerId).ToList();
+                var reservations = customer.Reservations.ToList();
                 Console.WriteLine("Here are your reservations:");
                 foreach (var reservation in reservations)
                 {
-                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.RoomId);
+                    var room = db.Rooms.FirstOrDefault(r => r.RoomId == reservation.ReservationRoom.RoomId);
                     if (room != null)
                     {
                         Console.WriteLine($"Room number {room.RoomNumber} between {reservation.CheckInDate} and {reservation.CheckOutDate}");
@@ -204,7 +204,7 @@
                     reservation.CheckOutDate = DateTime.Now;
                     db.SaveChanges();
                     Console.WriteLine();
-                    Console.WriteLine($"You have checked out from room number {reservation.Room.RoomNumber}");
+                    Console.WriteLine($"You have checked out from room number {reservation.ReservationRoom.RoomNumber}");
                 }
             }
         }

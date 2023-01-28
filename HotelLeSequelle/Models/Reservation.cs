@@ -1,26 +1,23 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace HotelLeSequelle.Models
+﻿namespace HotelLeSequelle.Models
 {
     public class Reservation
     {
         public int ReservationId { get; set; }
-
-        public Customer Customer { get; set; }
-        public int CustomerId { get; set; }
-        public Room Room { get; set; }
-        public int RoomId { get; set; }
-        [AllowNull]
-        public Receptionist Receptionist { get; set; }
-        [AllowNull]
-        public List<SideOrder> SideOrders { get; set; }
+        public Customer ReservationCustomer { get; set; }
+        public int ReservationCustomerID { get; set; }
+        public Room ReservationRoom { get; set; }
+        public int ReservationRoomId { get; set; }
+        public Receptionist? ReservationReceptionist { get; set; }
+        public int? ReservationReceptionistId { get; set; }
+        public List<SideOrder> ReservationSideOrders { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
 
         public Reservation()
         {
-            Customer = new Customer();
-            Room = new Room();
+            ReservationCustomer = new Customer();
+            ReservationRoom = new Room();
+            ReservationSideOrders = new List<SideOrder>();
         }
     }
 }

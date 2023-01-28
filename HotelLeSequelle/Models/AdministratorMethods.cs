@@ -118,8 +118,8 @@
             {
                 Console.WriteLine($"" +
                     $"Reservation ID: {reservation.ReservationId} " +
-                    $"Customer: {reservation.Customer.FirstName} {reservation.Customer.LastName} " +
-                    $"Room: {reservation.Room.RoomNumber} " +
+                    $"Customer: {reservation.ReservationCustomer.FirstName} {reservation.ReservationCustomer.LastName} " +
+                    $"Room: {reservation.ReservationRoom.RoomNumber} " +
                     $"Check in: {reservation.CheckInDate} " +
                     $"Check out: {reservation.CheckOutDate})");
             }
