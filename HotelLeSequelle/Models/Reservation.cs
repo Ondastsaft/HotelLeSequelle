@@ -15,8 +15,6 @@
 
         public Reservation()
         {
-            ReservationCustomer = new Customer();
-            ReservationRoom = new Room();
             ReservationSideOrders = new List<SideOrder>();
         }
     }

@@ -5,7 +5,7 @@
         public int HoteliD { get; set; }
         public int NumberOfRooms { get; set; }
         public int NumberOfFloors { get; set; }
-        public virtual ICollection<Floor> Floors { get; set; }
+        public List<Floor> Floors { get; set; }
         public string Name { get; set; }
         public string Country { get; set; }
         public string StreetAdress { get; set; }

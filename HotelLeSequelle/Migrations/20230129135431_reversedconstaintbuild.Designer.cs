@@ -4,6 +4,7 @@ using HotelLeSequelle;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelLeSequelle.Migrations
 {
     [DbContext(typeof(HotelLeSequelleContext))]
-    partial class HotelLeSequelleContextModelSnapshot : ModelSnapshot
+    [Migration("20230129135431_reversedconstaintbuild")]
+    partial class reversedconstaintbuild
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -430,13 +432,13 @@ namespace HotelLeSequelle.Migrations
                     b.HasOne("HotelLeSequelle.Models.Customer", "ReservationCustomer")
                         .WithMany("Reservations")
                         .HasForeignKey("ReservationCustomerID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("HotelLeSequelle.Models.Receptionist", "ReservationReceptionist")
                         .WithMany("Reservations")
                         .HasForeignKey("ReservationReceptionistId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("HotelLeSequelle.Models.Room", "ReservationRoom")
                         .WithMany("Reservations")

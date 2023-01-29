@@ -36,17 +36,23 @@ namespace HotelLeSequelle
             modelBuilder.Entity<Receptionist>().ToTable("Receptionists");
             modelBuilder.Entity<Waiter>().ToTable("Waiters").HasKey("WaiterId");
 
+            modelBuilder.Entity<Customer>().
+                HasMany(r => r.Reservations).
+                WithOne(rV => rV.ReservationCustomer).
+                OnDelete(DeleteBehavior.Restrict);
+
+
             modelBuilder.Entity<Reservation>().
                 HasOne(r => r.ReservationCustomer).
                 WithMany(c => c.Reservations).
                 HasPrincipalKey(c => c.CustomerId).
-                OnDelete(DeleteBehavior.Restrict);
+                OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Reservation>().
                 HasOne(r => r.ReservationReceptionist).
                 WithMany(rC => rC.Reservations).
                 HasPrincipalKey(r => r.ReceptionistId).
-                OnDelete(DeleteBehavior.Restrict);
+                OnDelete(DeleteBehavior.NoAction);
 
 
         }
@@ -56,7 +62,7 @@ namespace HotelLeSequelle
 //modelBuilder.Entity<Receptionist>().ToTable("Receptionists");
 //modelBuilder.Entity<Waiter>().ToTable("Waiters");
 //modelBuilder.Entity<Receptionist>().HasMany(r => r.Reservations).WithOne(rV => rV.ReservationReceptionist).OnDelete(DeleteBehavior.Restrict);
-//modelBuilder.Entity<Customer>().HasMany(r => r.Reservations).WithOne(rV => rV.ReservationCustomer).OnDelete(DeleteBehavior.Restrict);
+
 //modelBuilder.Entity<Person>().HasAlternateKey(p => p.UserName);
 //modelBuilder.Entity<Reservation>().HasOne(r => r.ReservationRoom)
 //    .WithMany(r => r.Reservations).HasForeignKey(r => r.ReservationRoomId)

@@ -1,5 +1,6 @@
 ﻿using HotelLeSequelle.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace HotelLeSequelle
 {
@@ -7,16 +8,15 @@ namespace HotelLeSequelle
     {
         private static readonly List<Action> DevMenu = new List<Action>()
                 {
-                    TruncateAllTables,
-                    DeleteAllTables,
-                    PopulateDatabase,
+
                     LogInTestCustomer,
                     LogInTestReceptionist,
                     LogInTestWaiter,
                     LogInTestAdmin,
-                    AddTestPersons,
-                    AddTestProducts,
-                    AddReservation,
+                    PopulateDatabase,
+                    TruncateAllTables,
+                    DeleteAllTables,
+                    AddTestReservations
                 };
         private static readonly List<Action> BaseMenu = new List<Action>()
         {
@@ -221,15 +221,15 @@ namespace HotelLeSequelle
         {
             using (var context = new HotelLeSequelleContext())
             {
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Reservation]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Customer]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Receptionist]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Waiter]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Room]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[SideOrder]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Floor]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[Product]");
-                context.Database.ExecuteSqlRaw("TRUNCATE TABLE [dbo].[SideOrderProduct]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[Reservation]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[Customer]");
+                context.Database.ExecuteSqlRaw("DROP [dbo].[Receptionist]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[Waiter]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[Room]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[SideOrder]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[Floor]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[Product]");
+                context.Database.ExecuteSqlRaw("DROP TABLE [dbo].[SideOrderProduct]");
             }
         }
         public static void DeleteAllTables()
@@ -254,6 +254,7 @@ namespace HotelLeSequelle
             AddTestHotel();
             AddTestProducts();
             AddTestPersons();
+            AddTestReservations();
         }
         public static void AddReservation()
         {
@@ -314,6 +315,48 @@ namespace HotelLeSequelle
                 CardDetails = "5521 4532 5678 2341, 421, 05/24 John Doe",
                 Nationality = "USA"
             };
+            var customer2 = new Customer()
+            {
+                FirstName = "Jane",
+                LastName = "Doe",
+                StreetAdress = "123 Main St",
+                Locality = "New York",
+                ZipCode = "12345",
+                PhoneNumber = "123-456-7890",
+                UserName = "JaneDoe",
+                Password = "1234",
+                Email = "",
+                CardDetails = "5521 4532 5678 2341, 421, 05/24 John Doe",
+                Nationality = "USA"
+            };
+            var customer3 = new Customer()
+            {
+                FirstName = "Mary",
+                LastName = "Doe",
+                StreetAdress = "23 Peach Street",
+                Locality = "London",
+                ZipCode = "12345",
+                PhoneNumber = "123-456-7890",
+                UserName = "MaryDoe",
+                Password = "1234",
+                Email = "",
+                CardDetails = "5521 4532 5678 2341, 421, 05/24 John Doe",
+                Nationality = "USA"
+            };
+            var customer4 = new Customer()
+            {
+                FirstName = "Steve",
+                LastName = "Doe",
+                StreetAdress = "23 Peach Street",
+                Locality = "London",
+                ZipCode = "12345",
+                PhoneNumber = "123-456-7890",
+                UserName = "JohnDoe",
+                Password = "1234",
+                Email = "",
+                CardDetails = "5521 4532 5678 2341, 421, 05/24 John Doe",
+                Nationality = "USA"
+            };
             var waiter = new Waiter()
             {
                 UserName = "Waiter",
@@ -329,6 +372,22 @@ namespace HotelLeSequelle
                 DateOfEmployment = new DateTime(2019, 1, 1),
                 Nationality = "USA"
             };
+            var waiter2 = new Waiter()
+            {
+                UserName = "Waiter2",
+                Password = "Waiter2",
+                FirstName = "Dave",
+                LastName = "Johnson",
+                StreetAdress = "Home",
+                EmployeeNumber = 1,
+                Locality = "Sweden",
+                Email = "a@a.com",
+                PhoneNumber = "123-456-7890",
+                ZipCode = "12345",
+                DateOfEmployment = new DateTime(2019, 1, 1),
+                Nationality = "USA"
+            };
+
             var receptionist = new Receptionist()
             {
                 UserName = "Receptionist",
@@ -344,11 +403,29 @@ namespace HotelLeSequelle
                 DateOfEmployment = new DateTime(2019, 1, 1),
                 Nationality = "USA"
             };
+            var receptionist2 = new Receptionist()
+            {
+                UserName = "Receptionist2",
+                Password = "Receptionist2",
+                FirstName = "Magnus",
+                LastName = "Magnusson",
+                StreetAdress = "Home",
+                EmployeeNumber = 2,
+                Locality = "Sweden",
+                Email = "",
+                PhoneNumber = "123-456-7890",
+                ZipCode = "12345",
+                DateOfEmployment = new DateTime(2019, 1, 1),
+                Nationality = "USA"
+            };
+            List<Customer> customerList = new List<Customer>() { customer, customer2, customer3, customer4 };
             using (var db = new HotelLeSequelleContext())
             {
-                db.Customers.Add(customer);
+                db.Customers.AddRange(customerList);
                 db.Waiters.Add(waiter);
+                db.Waiters.Add(waiter2);
                 db.Receptionists.Add(receptionist);
+                db.Receptionists.Add(receptionist2);
                 db.SaveChanges();
             }
         }
@@ -486,20 +563,100 @@ namespace HotelLeSequelle
         }
         public static void AddTestHotel()
         {
-            Hotel tempHotel = new Hotel();
-            tempHotel.Name = "Hotel Le Sequelle";
-            tempHotel.StreetAdress = "Kungsgatan 1";
-            tempHotel.Locality = "Stockholm";
-            tempHotel.Country = "Sweden";
-            tempHotel.PhoneNumber = "08-1234567";
-            tempHotel.ZipCode = "16101";
-            tempHotel.Email = "info@hotellesequelle.com";
-            tempHotel.WebPage = "www.hotellesequelle.com";
-            Console.Clear();
+            List<Floor> floorList = new List<Floor>();
+            for (int i = 0; i < 3; i++)
+            {
+                var floor = new Floor();
+                for (int j = 0; j < 4; j++)
+                {
+                    var room = new Room();
+                    floor.Rooms.Add(room);
+                }
+                floorList.Add(floor);
+            }
+
+
             var Db = new HotelLeSequelleContext();
-            tempHotel = AddTestFloorsAndRooms(tempHotel);
+            Hotel tempHotel = new Hotel()
+            {
+                Name = "Hotel Le Sequelle",
+                StreetAdress = "Kungsgatan 1",
+                Locality = "Stockholm",
+                Country = "Sweden",
+                PhoneNumber = "08-1234567",
+                ZipCode = "16101",
+                Email = "info@hotellesequelle.com",
+                WebPage = "www.hotellesequelle.com",
+
+            };
+            tempHotel.Floors.AddRange(floorList);
+            tempHotel.NumberOfFloors = CalculateNumerOfFloors(tempHotel.Floors);
+            tempHotel.NumberOfRooms = CalculateNumberOfRooms(tempHotel.Floors);
             Db.Hotels.Add(tempHotel);
             Db.SaveChanges();
+        }
+        public static void AddTestReservations()
+        {
+            var db = new HotelLeSequelleContext();
+            var customers = db.Customers.ToList();
+            Random random = new Random();
+            var rooms = db.Rooms.ToList();
+            for (int i = 0; i < 10; i++)
+            {
+                var reservation = new Reservation();
+                Tuple<DateTime, DateTime> dates = RandomReservationDates();
+                reservation.CheckInDate = dates.Item1;
+                reservation.CheckOutDate = dates.Item2;
+                rooms[random.Next(0, rooms.Count())].Reservations.Add(reservation);
+                db.SaveChanges();
+                if (random.Next(0, 10) % 2 == 0)
+                {
+                    var receptionists = db.Receptionists.ToList();
+                    receptionists[random.Next(0, receptionists.Count)].Reservations.Add(reservation);
+                    db.SaveChanges();
+                }
+                customers[random.Next(0, customers.Count())].Reservations.Add(reservation);
+                db.SaveChanges();
+
+            }
+        }
+        public static Tuple<DateTime, DateTime> RandomReservationDates()
+        {
+            Random random = new Random();
+            DateTime checkInDate = DateTime.Now;
+            for (int i = 0; i < 5; i++)
+            {
+                int day = random.Next(1, 30);
+                int month = random.Next(1, 12);
+                StringBuilder sb = new StringBuilder(day / month / 2023);
+                string checkInString = sb.ToString();
+                DateTime.TryParse(checkInString, out checkInDate);
+            }
+            int stay = random.Next(1, 14);
+            DateTime checkOutDate = checkInDate.AddDays(stay);
+            Tuple<DateTime, DateTime> dates = new Tuple<DateTime, DateTime>(checkInDate, checkOutDate);
+            return dates;
+        }
+        static int CalculateNumerOfFloors(List<Floor> floorsList)
+        {
+            int floors = 0;
+            foreach (var floor in floorsList)
+            {
+                floors++;
+            }
+            return floors;
+        }
+        static int CalculateNumberOfRooms(List<Floor> floorList)
+        {
+            int rooms = 0;
+            foreach (var floor in floorList)
+            {
+                foreach (var room in floor.Rooms)
+                {
+                    rooms++;
+                }
+            }
+            return rooms;
         }
         public static Hotel AddTestFloorsAndRooms(Hotel tempHotel)
         {
