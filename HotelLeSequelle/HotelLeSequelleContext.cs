@@ -22,6 +22,7 @@ namespace HotelLeSequelle
         public virtual DbSet<SideOrderProduct> SideOrderProducts => Set<SideOrderProduct>();
         public virtual DbSet<Floor> Floors => Set<Floor>();
         public virtual DbSet<Product> Products => Set<Product>();
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -31,28 +32,40 @@ namespace HotelLeSequelle
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Customer>().ToTable("Customers");
-            //modelBuilder.Entity<Receptionist>().ToTable("Receptionists");
-            //modelBuilder.Entity<Waiter>().ToTable("Waiters");
-            modelBuilder.Entity<Reservation>().HasOne(r => r.ReservationCustomer).WithMany(c => c.Reservations).HasPrincipalKey(c => c.CustomerId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Reservation>().HasOne(r => r.ReservationReceptionist).WithMany(rC => rC.Reservations).HasPrincipalKey(r => r.ReceptionistId).OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Receptionist>().HasMany(r => r.Reservations).WithOne(rV => rV.ReservationReceptionist).OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Customer>().HasMany(r => r.Reservations).WithOne(rV => rV.ReservationCustomer).OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Customer>().ToTable("Customers").HasKey("CustomerId");
+            modelBuilder.Entity<Receptionist>().ToTable("Receptionists");
+            modelBuilder.Entity<Waiter>().ToTable("Waiters").HasKey("WaiterId");
+
+            modelBuilder.Entity<Reservation>().
+                HasOne(r => r.ReservationCustomer).
+                WithMany(c => c.Reservations).
+                HasPrincipalKey(c => c.CustomerId).
+                OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reservation>().
+                HasOne(r => r.ReservationReceptionist).
+                WithMany(rC => rC.Reservations).
+                HasPrincipalKey(r => r.ReceptionistId).
+                OnDelete(DeleteBehavior.Restrict);
 
 
-
-            //modelBuilder.Entity<Person>().HasAlternateKey(p => p.UserName);
-            //modelBuilder.Entity<Reservation>().HasOne(r => r.ReservationRoom)
-            //    .WithMany(r => r.Reservations).HasForeignKey(r => r.ReservationRoomId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Reservation>().HasOne(r => r.Customer)
-            //    .WithMany(c => c.Reservations)
-            //    .HasForeignKey(k => k.CustomerId)
-            //.OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Receptionist>().HasMany(r => r.Reservations).WithOne(rv => rv.ReservationReceptionist).HasForeignKey(rv => rv.ReservationId).OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<SideOrder>().HasOne(t => t.Reservation).WithMany(b => b.SideOrders).HasForeignKey(b => b.ReservationId).OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<SideOrder>().HasOne(t => t.Staff).WithMany(p => p.SideOrders).HasForeignKey(p => p.StaffId).OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Room>().HasOne(r => r.Floor).WithMany(v => v.Rooms).HasForeignKey(v => v.FloorId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
+//modelBuilder.Entity<Customer>().ToTable("Customers");
+//modelBuilder.Entity<Receptionist>().ToTable("Receptionists");
+//modelBuilder.Entity<Waiter>().ToTable("Waiters");
+//modelBuilder.Entity<Receptionist>().HasMany(r => r.Reservations).WithOne(rV => rV.ReservationReceptionist).OnDelete(DeleteBehavior.Restrict);
+//modelBuilder.Entity<Customer>().HasMany(r => r.Reservations).WithOne(rV => rV.ReservationCustomer).OnDelete(DeleteBehavior.Restrict);
+//modelBuilder.Entity<Person>().HasAlternateKey(p => p.UserName);
+//modelBuilder.Entity<Reservation>().HasOne(r => r.ReservationRoom)
+//    .WithMany(r => r.Reservations).HasForeignKey(r => r.ReservationRoomId)
+//    .OnDelete(DeleteBehavior.Restrict);
+//modelBuilder.Entity<Reservation>().HasOne(r => r.Customer)
+//    .WithMany(c => c.Reservations)
+//    .HasForeignKey(k => k.CustomerId)
+//.OnDelete(DeleteBehavior.Restrict);
+//modelBuilder.Entity<Receptionist>().HasMany(r => r.Reservations).WithOne(rv => rv.ReservationReceptionist).HasForeignKey(rv => rv.ReservationId).OnDelete(DeleteBehavior.Restrict);
+//modelBuilder.Entity<SideOrder>().HasOne(t => t.Reservation).WithMany(b => b.SideOrders).HasForeignKey(b => b.ReservationId).OnDelete(DeleteBehavior.Restrict);
+//modelBuilder.Entity<SideOrder>().HasOne(t => t.Staff).WithMany(p => p.SideOrders).HasForeignKey(p => p.StaffId).OnDelete(DeleteBehavior.Restrict);
+//modelBuilder.Entity<Room>().HasOne(r => r.Floor).WithMany(v => v.Rooms).HasForeignKey(v => v.FloorId).OnDelete(DeleteBehavior.Restrict);
