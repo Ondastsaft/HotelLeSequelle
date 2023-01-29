@@ -10,6 +10,7 @@
         public Receptionist? ReservationReceptionist { get; set; }
         public int? ReservationReceptionistId { get; set; }
         public List<SideOrder> ReservationSideOrders { get; set; }
+        public bool PaidAndClosed { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
 

@@ -16,7 +16,8 @@ namespace HotelLeSequelle
                     PopulateDatabase,
                     TruncateAllTables,
                     DeleteAllTables,
-                    AddTestReservations
+                    AddTestReservations,
+                    AddTestSideOrders
                 };
         private static readonly List<Action> BaseMenu = new List<Action>()
         {
@@ -254,7 +255,6 @@ namespace HotelLeSequelle
             AddTestHotel();
             AddTestProducts();
             AddTestPersons();
-            AddTestReservations();
         }
         public static void AddReservation()
         {
@@ -595,6 +595,118 @@ namespace HotelLeSequelle
             Db.Hotels.Add(tempHotel);
             Db.SaveChanges();
         }
+        public static void AddTestSideOrders()
+        {
+            Random random = new Random();
+            var db = new HotelLeSequelleContext();
+            var reservations = db.Reservations.ToList();
+            var products = db.Products.ToList();
+            var reservation = CheckUnpaidReservations(reservations);
+
+            if (!reservation.PaidAndClosed)
+            {
+                var sideOrder = new SideOrder();
+                reservation.ReservationSideOrders.Add(sideOrder);
+                sideOrder = AddSideOrderProducts(products, sideOrder);
+
+                if (random.Next(0, 10) % 2 == 0)
+                {
+                    var receptionists = db.Receptionists.ToList();
+                    sideOrder.SideOrderReceptionist = receptionists[random.Next(0, receptionists.Count)];
+                }
+
+                if (random.Next(0, 10) % 2 == 0 && sideOrder.SideOrderReceptionist == null)
+                {
+                    var waiters = db.Waiters.ToList();
+                    sideOrder.SideOrderWaiter = waiters[random.Next(0, waiters.Count)];
+                }
+
+                db.SaveChanges();
+
+
+            }
+        }
+
+        public static SideOrder AddSideOrderProducts(List<Product> products, SideOrder sideOrder)
+        {
+            Random random = new Random();
+
+            for (int i = 0; i < random.Next(0, 5); i++)
+            {
+                for (int j = 0; j < random.Next(1, 7); j++)
+                {
+
+                    int amount = random.Next(0, 4);
+                    int productIndex = random.Next(0, products.Count);
+                    bool productNotInSideorder = true;
+
+                    if (sideOrder.SideOrderProducts.Count != 0)
+                    {
+                        foreach (var siderOrderProduct in sideOrder.SideOrderProducts)
+                        {
+                            if (siderOrderProduct.Product.Name == products[productIndex].Name)
+                            {
+                                siderOrderProduct.Amount = amount;
+                                productNotInSideorder = false;
+                            }
+
+                        }
+                        if (productNotInSideorder)
+                        {
+                            var sideOrderProduct = new SideOrderProduct();
+                            sideOrderProduct.Product = products[productIndex];
+                            sideOrderProduct.Amount = amount;
+                            sideOrder.SideOrderProducts.Add(sideOrderProduct);
+                        }
+                    }
+                    else
+                    {
+                        var sideOrderProduct = new SideOrderProduct();
+                        sideOrderProduct.Product = products[productIndex];
+                        sideOrderProduct.Amount = amount;
+                        sideOrder.SideOrderProducts.Add(sideOrderProduct);
+                    }
+                }
+
+            }
+            return sideOrder;
+        }
+
+
+        public static Reservation CheckUnpaidReservations(List<Reservation> reservations)
+        {
+            Random random = new Random();
+            Reservation returnReservation = new Reservation();
+            bool openreservation = false;
+            foreach (var reservation in reservations)
+            {
+                if (!reservation.PaidAndClosed)
+                {
+                    openreservation = true;
+
+                }
+                if (openreservation)
+                {
+                    int reservationIndex = 0;
+                    while (openreservation)
+                    {
+                        reservationIndex = random.Next(0, reservations.Count());
+                        if (reservations[reservationIndex].PaidAndClosed == false)
+                        {
+                            returnReservation = reservations[reservationIndex];
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!openreservation)
+            {
+                Console.WriteLine("No open reservation could be found");
+                returnReservation.PaidAndClosed = true;
+            }
+
+            return returnReservation;
+        }
         public static void AddTestReservations()
         {
             var db = new HotelLeSequelleContext();
@@ -608,14 +720,15 @@ namespace HotelLeSequelle
                 reservation.CheckInDate = dates.Item1;
                 reservation.CheckOutDate = dates.Item2;
                 rooms[random.Next(0, rooms.Count())].Reservations.Add(reservation);
-                db.SaveChanges();
+                customers[random.Next(0, customers.Count())].Reservations.Add(reservation);
+
                 if (random.Next(0, 10) % 2 == 0)
                 {
                     var receptionists = db.Receptionists.ToList();
                     receptionists[random.Next(0, receptionists.Count)].Reservations.Add(reservation);
                     db.SaveChanges();
                 }
-                customers[random.Next(0, customers.Count())].Reservations.Add(reservation);
+
                 db.SaveChanges();
 
             }
@@ -623,15 +736,13 @@ namespace HotelLeSequelle
         public static Tuple<DateTime, DateTime> RandomReservationDates()
         {
             Random random = new Random();
-            DateTime checkInDate = DateTime.Now;
-            for (int i = 0; i < 5; i++)
-            {
-                int day = random.Next(1, 30);
-                int month = random.Next(1, 12);
-                StringBuilder sb = new StringBuilder(day / month / 2023);
-                string checkInString = sb.ToString();
-                DateTime.TryParse(checkInString, out checkInDate);
-            }
+
+
+            int day = random.Next(1, 30);
+            int month = random.Next(1, 12);
+            StringBuilder sb = new StringBuilder(day / month / 2023);
+            string checkInString = sb.ToString();
+            DateTime.TryParse(checkInString, out DateTime checkInDate);
             int stay = random.Next(1, 14);
             DateTime checkOutDate = checkInDate.AddDays(stay);
             Tuple<DateTime, DateTime> dates = new Tuple<DateTime, DateTime>(checkInDate, checkOutDate);

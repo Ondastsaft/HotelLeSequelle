@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelLeSequelle.Migrations
 {
     [DbContext(typeof(HotelLeSequelleContext))]
-    [Migration("20230129140634_noactionconstraintbuild")]
-    partial class noactionconstraintbuild
+    [Migration("20230129213549_yetAnotherFreshStart")]
+    partial class yetAnotherFreshStart
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -258,6 +258,9 @@ namespace HotelLeSequelle.Migrations
                     b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("PaidAndClosed")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ReservationCustomerID")
                         .HasColumnType("int");
 
@@ -310,9 +313,6 @@ namespace HotelLeSequelle.Migrations
                     b.Property<int>("OrderTotal")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("SideOrderReceptionistReceptionistId")
                         .HasColumnType("int");
 
@@ -323,8 +323,6 @@ namespace HotelLeSequelle.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("SideOrderId");
-
-                    b.HasIndex("ProductId");
 
                     b.HasIndex("SideOrderReceptionistReceptionistId");
 
@@ -466,10 +464,6 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.SideOrder", b =>
                 {
-                    b.HasOne("HotelLeSequelle.Models.Product", null)
-                        .WithMany("SideOrders")
-                        .HasForeignKey("ProductId");
-
                     b.HasOne("HotelLeSequelle.Models.Receptionist", "SideOrderReceptionist")
                         .WithMany("SideOrders")
                         .HasForeignKey("SideOrderReceptionistReceptionistId");
@@ -492,7 +486,7 @@ namespace HotelLeSequelle.Migrations
             modelBuilder.Entity("HotelLeSequelle.Models.SideOrderProduct", b =>
                 {
                     b.HasOne("HotelLeSequelle.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("SideOrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -525,7 +519,7 @@ namespace HotelLeSequelle.Migrations
 
             modelBuilder.Entity("HotelLeSequelle.Models.Product", b =>
                 {
-                    b.Navigation("SideOrders");
+                    b.Navigation("SideOrderProducts");
                 });
 
             modelBuilder.Entity("HotelLeSequelle.Models.Receptionist", b =>

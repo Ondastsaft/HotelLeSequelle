@@ -6,10 +6,10 @@
         public string Name { get; set; }
         public int Price { get; set; }
         public int Stock { get; set; }
-        public virtual List<SideOrder> SideOrders { get; set; }
+        public virtual List<SideOrderProduct> SideOrderProducts { get; set; }
         public Product()
         {
-            SideOrders = new List<SideOrder>();
+            SideOrderProducts = new List<SideOrderProduct>();
             Name = "NOT YET PROVIDED";
         }
     }

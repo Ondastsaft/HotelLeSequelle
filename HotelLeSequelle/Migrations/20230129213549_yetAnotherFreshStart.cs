@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HotelLeSequelle.Migrations
 {
-    public partial class init : Migration
+    public partial class yetAnotherFreshStart : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -185,6 +185,7 @@ namespace HotelLeSequelle.Migrations
                     ReservationCustomerID = table.Column<int>(type: "int", nullable: false),
                     ReservationRoomId = table.Column<int>(type: "int", nullable: false),
                     ReservationReceptionistId = table.Column<int>(type: "int", nullable: true),
+                    PaidAndClosed = table.Column<bool>(type: "bit", nullable: false),
                     CheckInDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CheckOutDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -195,8 +196,7 @@ namespace HotelLeSequelle.Migrations
                         name: "FK_Reservations_Customers_ReservationCustomerID",
                         column: x => x.ReservationCustomerID,
                         principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CustomerId");
                     table.ForeignKey(
                         name: "FK_Reservations_Receptionists_ReservationReceptionistId",
                         column: x => x.ReservationReceptionistId,
@@ -219,17 +219,11 @@ namespace HotelLeSequelle.Migrations
                     SideOrderReceptionistReceptionistId = table.Column<int>(type: "int", nullable: true),
                     SideOrderWaiterWaiterId = table.Column<int>(type: "int", nullable: true),
                     SideOrderReservationReservationId = table.Column<int>(type: "int", nullable: true),
-                    OrderTotal = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: true)
+                    OrderTotal = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SideOrders", x => x.SideOrderId);
-                    table.ForeignKey(
-                        name: "FK_SideOrders_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId");
                     table.ForeignKey(
                         name: "FK_SideOrders_Receptionists_SideOrderReceptionistReceptionistId",
                         column: x => x.SideOrderReceptionistReceptionistId,
@@ -310,11 +304,6 @@ namespace HotelLeSequelle.Migrations
                 column: "SideOrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SideOrders_ProductId",
-                table: "SideOrders",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SideOrders_SideOrderReceptionistReceptionistId",
                 table: "SideOrders",
                 column: "SideOrderReceptionistReceptionistId");
@@ -339,10 +328,10 @@ namespace HotelLeSequelle.Migrations
                 name: "SideOrderProducts");
 
             migrationBuilder.DropTable(
-                name: "SideOrders");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "SideOrders");
 
             migrationBuilder.DropTable(
                 name: "Reservations");
