@@ -27,7 +27,7 @@ namespace HotelLeSequelle
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Hotellet;Trusted_Connection=True; ");
+                optionsBuilder.UseSqlServer("");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
